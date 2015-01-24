@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class Arms : BodyPart 
 {	
-<<<<<<< HEAD
 	public enum ANGLE
 	{
 		NONE,
