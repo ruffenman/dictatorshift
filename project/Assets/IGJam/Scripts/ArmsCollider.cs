@@ -4,42 +4,25 @@ using System.Collections.Generic;
 
 public class ArmsCollider : MonoBehaviour 
 {
-	public static class TAGS
-	{
-		public static string NONE = "";
-		public static string PICKUP = "pickup";
-		public static string ATTACKABLE = "attackable";
-	}
+	List<GameObject> interactibleCollisions = new List<GameObject>();
 	
-	List<GameObject> pickupCollisions = new List<GameObject>();
-	List<GameObject> attackableCollisions = new List<GameObject>();
-	
-	public GameObject GetFirstPickup()
+	public GameObject GetFirstInteractible()
 	{
-		if(pickupCollisions.Count > 0)
+		if(interactibleCollisions.Count > 0)
 	    {
-			while(pickupCollisions.Count > 0 && pickupCollisions[0] == null)
+			while(interactibleCollisions.Count > 0 && interactibleCollisions[0] == null)
 			{
-				pickupCollisions.RemoveAt (0);
-				Debug.LogWarning ("Arms.cs cleared invalid pickup from list");
+				interactibleCollisions.RemoveAt (0);
+				Debug.LogWarning ("Arms.cs cleared invalid interactible from list");
 			}
-			return pickupCollisions[0];
+			return interactibleCollisions[0];
 		}
 		return null;
 	}
 	
-	public GameObject GetFirstAttackable()
+	public List<GameObject> GetAllInteractibles()
 	{
-		if(attackableCollisions.Count > 0)
-		{
-			while(attackableCollisions.Count > 0 && attackableCollisions[0] == null)
-			{
-				attackableCollisions.RemoveAt (0);
-				Debug.LogWarning ("Arms.cs cleared invalid attackable from list");
-			}
-			return attackableCollisions[0];
-		}
-		return null;
+		return interactibleCollisions;
 	}
 	
 	// TODO MAKE SURE I DONT NEED ON COLLISION ENTER INSTEAD ******************************
@@ -47,80 +30,45 @@ public class ArmsCollider : MonoBehaviour
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if(other.tag == TAGS.PICKUP)
+		if(other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE)
 		{
-			ReportAddPickupCollision(other.gameObject);
-		}
-		else if(other.tag == TAGS.ATTACKABLE)
-		{
-			ReportAddAttackableCollision(other.gameObject);
+			ReportAddInteractiveCollision(other.gameObject);
 		}
 	}
 	
 	void OnTriggerExit(Collider other)
 	{
-		if(other.tag == TAGS.PICKUP)
+		if(other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE)
 		{
-			ReportRemovePickupCollision(other.gameObject);
-		}
-		else if(other.tag == TAGS.ATTACKABLE)
-		{
-			ReportRemoveAttackableCollision(other.gameObject);
+			ReportRemoveInteractiveCollision(other.gameObject);
 		}
 	}
 	
 	// call from OnTriggerEnter() on pickup gameObject with collider/rigidbody
-	void ReportAddPickupCollision(GameObject collision) 
+	void ReportAddInteractiveCollision(GameObject collision) 
 	{
-		if(pickupCollisions.Contains (collision) == false)
+		if(interactibleCollisions.Contains (collision) == false)
 		{
 			Debug.Log ("ArmsCollider.cs -- new pickup in range");
-			pickupCollisions.Add (collision);
+			interactibleCollisions.Add (collision);
 		}
 		else
 		{
-			Debug.LogWarning ("ArmsCollider.cs attempted to add duplicate attackable");
+			Debug.LogWarning ("ArmsCollider.cs attempted to add duplicate interactible");
 		}
 		
 	}
 	
 	// call from OnTriggerExit() on pickup gameObject with collider/rigidbody
-	void ReportRemovePickupCollision(GameObject collision)
+	void ReportRemoveInteractiveCollision(GameObject collision)
 	{
-		if(pickupCollisions.Contains (collision))
+		if(interactibleCollisions.Contains (collision))
 		{
-			pickupCollisions.Remove (collision);
+			interactibleCollisions.Remove (collision);
 		}
 		else
 		{
-			Debug.LogWarning ("ArmsCollider.cs attempted to remove invalid pickup");
-		}
-	}
-	
-	// call from OnTriggerEnter() on pickup gameObject with collider/rigidbody
-	void ReportAddAttackableCollision(GameObject collision)
-	{
-		Debug.Log ("ArmsCollider.cs -- new attackable in range");
-		if(attackableCollisions.Contains (collision) == false)
-		{
-			attackableCollisions.Add (collision);
-		}
-		else
-		{
-			Debug.LogWarning ("ArmsCollider.cs attempted to add duplicate attackable");
-		}
-	}
-	
-	// call from OnTriggerExit() on pickup gameObject with collider/rigidbody
-	void ReportRemoveAttackableCollision(GameObject collision)
-	{
-		if(attackableCollisions.Contains (collision))
-		{
-			attackableCollisions.Remove (collision);
-		}
-		else
-		{
-			Debug.LogWarning ("ArmsCollider.cs attempted to remove invalid attackable");
+			Debug.LogWarning ("ArmsCollider.cs attempted to remove invalid interactible");
 		}
 	}
 }

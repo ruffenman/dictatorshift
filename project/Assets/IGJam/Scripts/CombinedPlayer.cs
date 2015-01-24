@@ -8,26 +8,10 @@ public class CombinedPlayer : WorldObject
 	BodyPart[] bodyParts;
 	Transform[] bodyPartTransforms;
 
-	CharacterController controller;
-	Vector3 velocity;
-	float gravity = 2f;
-	float moveDepreciation = 0.9f;
-	float stopVelocitySquared = 1.0f;
-
     public BodyPart GetBodyPart(BodyPart.BodyPartType partType)
     {
         return bodyParts[(int)partType];
     }
-
-	public void AddPlayerVelocity(Vector3 addedVelocity)
-	{
-		SetPlayerVelocity(velocity + addedVelocity);
-	}
-
-	public void SetPlayerVelocity(Vector3 newVelocity)
-	{
-		velocity = newVelocity;
-	}
 
 	new void Start ()
 	{
