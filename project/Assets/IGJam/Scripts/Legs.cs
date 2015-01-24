@@ -3,8 +3,13 @@ using System.Collections;
 
 public class Legs : BodyPart 
 {
+	// properties
+	private float runSpeed = 10f;
+	private float speedDepreciation = 0.9f;
+	private float stopSpeedSquared = 2;
+	
+	// utility
 	private Vector3 legVelocity;
-	private float runSpeed = 1f;
 
 	public Legs(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 		: base(BodyPart.BodyPartType.LEGS, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
@@ -17,6 +22,15 @@ public class Legs : BodyPart
 		if (legVelocity != Vector3.zero)
 		{
 			combinedPlayer.AddVelocity(legVelocity);
+		}
+
+		if (legVelocity.sqrMagnitude > stopSpeedSquared)
+		{
+			legVelocity = legVelocity * speedDepreciation;
+		}
+		else
+		{
+			legVelocity = Vector3.zero;
 		}
 	}
 

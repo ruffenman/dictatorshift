@@ -15,7 +15,7 @@ public class WorldObject : MonoBehaviour
 	// properties
 	public ObjectType objectType;
 	public float moveDepreciation = 0.9f;
-	public float stopVelocitySquared = 1.0f;
+	public float stopVelocity = 1.0f;
 
 	// utility
 	private float health = 100;
@@ -69,29 +69,33 @@ public class WorldObject : MonoBehaviour
 
 	void Move()
 	{
-		Vector3 newVelocity = velocity;
+		if (velocity != Vector3.zero)
+		{
+			Debug.Log(velocity);
+			Vector3 newVelocity = velocity;
 
-		// gravity
-		if (controller.isGrounded)
-		{
-			newVelocity.y = 0;
-		}
-		else
-		{
-			newVelocity.y -= gravity;
-		}
+			// gravity
+			if (controller.isGrounded)
+			{
+				newVelocity.y = 0;
+			}
+			else
+			{
+				newVelocity.y -= gravity;
+			}
 
-		// drag
-		if (newVelocity.sqrMagnitude > stopVelocitySquared)
-		{
-			newVelocity.x *= moveDepreciation;
-		}
-		else
-		{
-			newVelocity.x = 0;
-		}
+			// drag
+			if (Mathf.Abs(newVelocity.x) > stopVelocity)
+			{
+				newVelocity.x *= moveDepreciation;
+			}
+			else
+			{
+				newVelocity.x = 0;
+			}
 
-		controller.Move(newVelocity * Time.deltaTime);
-		SetVelocity(newVelocity);
+			controller.Move(newVelocity * Time.deltaTime);
+			SetVelocity(newVelocity);
+		}
 	}
 }

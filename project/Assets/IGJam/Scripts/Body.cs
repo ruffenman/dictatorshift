@@ -6,12 +6,14 @@ public class Body : BodyPart
 	//properties
 	private float thrustSpeed = 2f;
 	private float cooldownTime = 1f;
+	private float speedDepreciation = 0.9f;
+	private float stopSpeedSquared = 2;
 
 	// utility
 	private bool canThrust;
 	private float cooldownTimer;
 	private Vector3 bodyVelocity;
-	
+
 	// constructor
 	public Body(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 		: base(BodyPart.BodyPartType.BODY, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
@@ -25,6 +27,14 @@ public class Body : BodyPart
 		if (bodyVelocity != Vector3.zero)
 		{
 			combinedPlayer.AddVelocity(bodyVelocity);
+		}
+		if (bodyVelocity.sqrMagnitude > stopSpeedSquared)
+		{
+			bodyVelocity = bodyVelocity * speedDepreciation;
+		}
+		else
+		{
+			bodyVelocity = Vector3.zero;
 		}
 	}
 
@@ -62,7 +72,7 @@ public class Body : BodyPart
 		if (canThrust)
 		{
 			// and received button press and direction
-			if (lastInputState.actionJustPressed && (lastInputState.direction != IGJInputManager.InputDirection.None))
+			if (lastInputState.actionJustPressed && (lastInputState.directionVec != Vector3.zero))
 			{
 				bodyVelocity += lastInputState.directionVec * thrustSpeed;
 				EnterCooldown();
