@@ -16,7 +16,7 @@ public class Legs : BodyPart
 	{
 		if (legVelocity != Vector3.zero)
 		{
-			combinedPlayer.AddPlayerVelocity(legVelocity);
+			combinedPlayer.AddVelocity(legVelocity);
 		}
 	}
 

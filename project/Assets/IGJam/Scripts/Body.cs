@@ -24,7 +24,7 @@ public class Body : BodyPart
 		UpdateCooldownTimer();
 		if (bodyVelocity != Vector3.zero)
 		{
-			combinedPlayer.AddPlayerVelocity(bodyVelocity);
+			combinedPlayer.AddVelocity(bodyVelocity);
 		}
 	}
 
