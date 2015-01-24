@@ -1,8 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+
+public class FireLazerEventArgs : EventArgs
+{
+    public Head.PowerLevel mPowerLevel;
+    public int mDirection;
+};
+
+public delegate void LazerFiredEventHandler(object sender, EventArgs e);
 
 public class Head : BodyPart
 {
+    public event LazerFiredEventHandler LazerFired;
+
+    private void OnLazerFired(FireLazerEventArgs e)
+    {
+        if (LazerFired != null)
+            LazerFired(this, e);
+    }
+
     public enum PowerLevel
     {
         None,
@@ -11,11 +28,10 @@ public class Head : BodyPart
         High
     }
 
-    private double powerLevelTimer = 0.0f;
-    private bool shouldFire = false;
-    private PowerLevel currentPowerLevel = PowerLevel.None;
+    private double mPowerLevelTimer = 0.0f;
+    private bool mShouldFire = false;
+    private PowerLevel mCurrentPowerLevel = PowerLevel.None;
     private Transform mTransform;
-    public GameObject lazerPrefab;
 
 	public Head(int newPlayerIndex, Transform newSpriteTransform)
 		: base(BodyPart.BodyPartType.HEAD, newPlayerIndex, newSpriteTransform)
@@ -29,10 +45,10 @@ public class Head : BodyPart
         UpdateFiringStatus();
 
         //  if the button is pushed, then we can check for lazer firing
-        if (shouldFire)
+        if (mShouldFire)
         {
             FireTheLazer();
-            currentPowerLevel = PowerLevel.None;
+            mCurrentPowerLevel = PowerLevel.None;
         }
 	}
 
@@ -41,13 +57,13 @@ public class Head : BodyPart
         // check input on 
         if (Input.GetKey(KeyCode.Space))
         {
-            powerLevelTimer += Time.deltaTime;
+            mPowerLevelTimer += Time.deltaTime;
         }
-        else if (currentPowerLevel != PowerLevel.None)
+        else if (mCurrentPowerLevel != PowerLevel.None)
         {
-            shouldFire = true;
+            mShouldFire = true;
             UpdatePowerLevel();
-            powerLevelTimer = 0.0f;
+            mPowerLevelTimer = 0.0f;
         }
     }
 
@@ -56,25 +72,25 @@ public class Head : BodyPart
         const double mediumPowerLevelTime = 1.0f; // 1 second
         const double highPowerLevelTime = 2.0f;
 
-        if (powerLevelTimer >= highPowerLevelTime)
+        if (mPowerLevelTimer >= highPowerLevelTime)
         {
-            currentPowerLevel = PowerLevel.High;
+            mCurrentPowerLevel = PowerLevel.High;
         }
-        else if (powerLevelTimer >= mediumPowerLevelTime)
+        else if (mPowerLevelTimer >= mediumPowerLevelTime)
         {
-            currentPowerLevel = PowerLevel.Medium;
+            mCurrentPowerLevel = PowerLevel.Medium;
         }
         else
         {
-            currentPowerLevel = PowerLevel.Low;
+            mCurrentPowerLevel = PowerLevel.Low;
         }
     }
 
     private void FireTheLazer()
     {
-        // first get the directional value
-        //double lazerDirection = 180.0f;
-        //GameObject Clone;
-        //Clone = (Instantiate(lazerPrefab, transform.position, transform.rotation)) as GameObject;
+        FireLazerEventArgs eventArgs = new FireLazerEventArgs();
+        eventArgs.mDirection = 0;
+        eventArgs.mPowerLevel = mCurrentPowerLevel;
+        OnLazerFired(eventArgs);
     }
 }
