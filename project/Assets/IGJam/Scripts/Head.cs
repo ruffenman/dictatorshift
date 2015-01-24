@@ -1,21 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Head : BodyPart
 {
-    public enum PowerLevel
-    {
-        None,
-        Low,
-        Medium,
-        High
-    }
-
-    private double powerLevelTimer = 0.0f;
-    private bool shouldFire = false;
-    private PowerLevel currentPowerLevel = PowerLevel.None;
-    private Transform mTransform;
-    public GameObject lazerPrefab;
+    private double mPowerLevelTimer = 0.0f;
+    private bool mShouldFire = false;
+    private Lazer.PowerLevel mCurrentPowerLevel = Lazer.PowerLevel.None;
 
 	public Head(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 		: base(BodyPart.BodyPartType.HEAD, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
@@ -29,25 +20,25 @@ public class Head : BodyPart
         UpdateFiringStatus();
 
         //  if the button is pushed, then we can check for lazer firing
-        if (shouldFire)
+        if (mShouldFire)
         {
             FireTheLazer();
-            currentPowerLevel = PowerLevel.None;
+            mCurrentPowerLevel = Lazer.PowerLevel.None;
         }
 	}
 
     private void UpdateFiringStatus()
     {
-        // check input on 
-        if (Input.GetKey(KeyCode.Space))
+        //if (lastInputState.actionPressed)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            powerLevelTimer += Time.deltaTime;
+            mPowerLevelTimer += Time.deltaTime;
         }
-        else if (currentPowerLevel != PowerLevel.None)
+        else if (mPowerLevelTimer > 0.0f)
         {
-            shouldFire = true;
+            mShouldFire = true;
             UpdatePowerLevel();
-            powerLevelTimer = 0.0f;
+            mPowerLevelTimer = 0.0f;
         }
     }
 
@@ -56,25 +47,23 @@ public class Head : BodyPart
         const double mediumPowerLevelTime = 1.0f; // 1 second
         const double highPowerLevelTime = 2.0f;
 
-        if (powerLevelTimer >= highPowerLevelTime)
+        if (mPowerLevelTimer >= highPowerLevelTime)
         {
-            currentPowerLevel = PowerLevel.High;
+            mCurrentPowerLevel = Lazer.PowerLevel.High;
         }
-        else if (powerLevelTimer >= mediumPowerLevelTime)
+        else if (mPowerLevelTimer >= mediumPowerLevelTime)
         {
-            currentPowerLevel = PowerLevel.Medium;
+            mCurrentPowerLevel = Lazer.PowerLevel.Medium;
         }
         else
         {
-            currentPowerLevel = PowerLevel.Low;
+            mCurrentPowerLevel = Lazer.PowerLevel.Low;
         }
     }
 
     private void FireTheLazer()
     {
-        // first get the directional value
-        //double lazerDirection = 180.0f;
-        //GameObject Clone;
-        //Clone = (Instantiate(lazerPrefab, transform.position, transform.rotation)) as GameObject;
+        mShouldFire = false;
+        combinedPlayer.FireTheLazer(mCurrentPowerLevel, new Vector3(0, 0, 0));//lastInputState.direction);
     }
 }
