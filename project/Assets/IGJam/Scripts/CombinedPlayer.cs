@@ -1,32 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CombinedPlayer : MonoBehaviour 
+public class CombinedPlayer : WorldObject 
 {
     public GameObject lazerPrefab;
 
 	BodyPart[] bodyParts;
 	Transform[] bodyPartTransforms;
 
-	CharacterController controller;
-	Vector3 velocity;
-	float gravity = 2f;
-	float moveDepreciation = 0.9f;
-	float stopVelocitySquared = 1.0f;
-
-	public void AddPlayerVelocity(Vector3 addedVelocity)
+	new void Start () 
 	{
-		SetPlayerVelocity(velocity + addedVelocity);
-	}
-
-	public void SetPlayerVelocity(Vector3 newVelocity)
-	{
-		velocity = newVelocity;
-	}
-
-	void Start () 
-	{
-		controller = GetComponent<CharacterController>();
+		base.Start();
 
 		// initialize sprites
 		Transform graphicsTransform = transform.Find("Graphics");
@@ -44,11 +28,11 @@ public class CombinedPlayer : MonoBehaviour
         bodyParts[(int)BodyPart.BodyPartType.LEGS] = new Legs(3, bodyPartTransforms[(int)BodyPart.BodyPartType.LEGS], this);
 	}
 
-	void Update()
+	public override void Update()
 	{
+		base.Update();
 		UpdateBodyParts();
 		UpdateSprites();
-		Move();
 	}
 
 	void UpdateBodyParts () 
@@ -63,32 +47,9 @@ public class CombinedPlayer : MonoBehaviour
 	{
 	}
 
-	void Move()
+	protected override void Die()
 	{
-		Vector3 newVelocity = velocity;
-
-		// gravity
-		//if (controller.isGrounded)
-		{
-			newVelocity.y = 0;
-		}
-		//else
-		//{
-		//	newVelocity.y -= gravity;
-		//}
-
-		// drag
-		if (newVelocity.sqrMagnitude > stopVelocitySquared)
-		{
-			newVelocity.x *= moveDepreciation;
-		}
-		else
-		{
-			newVelocity.x = 0;
-		}
-
-		controller.Move(newVelocity * Time.deltaTime);
-		SetPlayerVelocity(newVelocity);
+		base.Die();
 	}
 
     public void FireTheLazer(Lazer.PowerLevel powerLevel, Vector3 direction)
