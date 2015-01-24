@@ -18,8 +18,8 @@ public class Head : BodyPart
     private PowerLevel mCurrentPowerLevel = PowerLevel.None;
     private Transform mTransform;
 
-	public Head(int newPlayerIndex, Transform newSpriteTransform)
-		: base(BodyPart.BodyPartType.HEAD, newPlayerIndex, newSpriteTransform)
+	public Head(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
+		: base(BodyPart.BodyPartType.HEAD, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
 	{
 	}
 

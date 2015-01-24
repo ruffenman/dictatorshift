@@ -2,9 +2,9 @@
 using System.Collections;
 
 public class Body : BodyPart 
-{	
-	public Body(int newPlayerIndex, Transform newSpriteTransform)
-		: base(BodyPart.BodyPartType.BODY, newPlayerIndex, newSpriteTransform)
+{
+	public Body(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
+		: base(BodyPart.BodyPartType.BODY, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
 	{
 	}
 	
