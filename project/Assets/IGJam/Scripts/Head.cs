@@ -28,8 +28,8 @@ public class Head : BodyPart
 
     private void UpdateFiringStatus()
     {
-        //if (lastInputState.actionPressed)
-        if (Input.GetKeyDown(KeyCode.Space)) // this needs to be fixed yo
+        if (lastInputState.actionPressed)
+        //if (Input.GetKeyDown(KeyCode.Space)) // this needs to be fixed yo
         {
             mPowerLevelTimer += Time.deltaTime;
         }
@@ -64,6 +64,6 @@ public class Head : BodyPart
     private void FireTheLazer()
     {
         mShouldFire = false;
-        combinedPlayer.FireTheLazer(mCurrentPowerLevel, IGJInputManager.InputDirection.Right);//lastInputState.direction);
+        combinedPlayer.FireTheLazer(mCurrentPowerLevel, lastInputState.direction);
     }
 }
