@@ -198,33 +198,17 @@ public class Arms : BodyPart
 	
 	void ParseInput()
 	{	
-		bool down;
-		ANGLE old = inputState.inputAngle;
-		IGJInputManager.InputDirection direction = lastInputState.direction;
 		if(lastInputState == null)
 		{
 			Debug.LogWarning ("Arms.cs -- no lastInputState initialized! Overriding with no movement!");
 			return;
 		}
-
+		
+		bool down;
+		ANGLE old = inputState.inputAngle;
+		IGJInputManager.InputDirection direction = lastInputState.direction;
 		down = lastInputState.actionPressed;
 		
-		// HACK TESTING OVERRIDE *****************************************************************
-		if(Input.GetKey (KeyCode.F)) {down = true; }
-		else {down = false; }
-		
-		if(Input.GetKey (KeyCode.W)) { inputState.inputAngle = ANGLE.UP; }
-		else if(Input.GetKey (KeyCode.X)) { inputState.inputAngle = ANGLE.DOWN; }
-		else if(Input.GetKey (KeyCode.A)) { inputState.inputAngle = ANGLE.LEFT; }
-		else if(Input.GetKey (KeyCode.D)) { inputState.inputAngle = ANGLE.RIGHT; }
-		else if(Input.GetKey (KeyCode.Q)) { inputState.inputAngle = ANGLE.UPLEFT; }
-		else if(Input.GetKey (KeyCode.E)) { inputState.inputAngle = ANGLE.UPRIGHT; }
-		else if(Input.GetKey (KeyCode.Z)) { inputState.inputAngle = ANGLE.DOWNLEFT; }
-		else if(Input.GetKey (KeyCode.C)) { inputState.inputAngle = ANGLE.DOWNRIGHT; }
-		else  { inputState.inputAngle = ANGLE.NONE; }
-		// HACK TESTING OVERRIDE *****************************************************************
-		
-		/*
 		switch(direction)
 		{
 			case(IGJInputManager.InputDirection.Up): inputState.inputAngle = ANGLE.UP; break;
@@ -237,7 +221,6 @@ public class Arms : BodyPart
 			case(IGJInputManager.InputDirection.DownRight): inputState.inputAngle = ANGLE.DOWNRIGHT; break;
 			default: inputState.inputAngle = ANGLE.NONE; break;
 		}
-		*/
 		
 		if (inputState.inputAngle != old)
 		{
