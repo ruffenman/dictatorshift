@@ -2,23 +2,8 @@
 using System.Collections;
 using System;
 
-public class FireLazerEventArgs : EventArgs
-{
-    public Head.PowerLevel mPowerLevel;
-    public int mDirection;
-};
-
-public delegate void LazerFiredEventHandler(object sender, EventArgs e);
-
 public class Head : BodyPart
 {
-    public event LazerFiredEventHandler LazerFired;
-
-    private void OnLazerFired(FireLazerEventArgs e)
-    {
-        if (LazerFired != null)
-            LazerFired(this, e);
-    }
 
     public enum PowerLevel
     {
@@ -88,9 +73,5 @@ public class Head : BodyPart
 
     private void FireTheLazer()
     {
-        FireLazerEventArgs eventArgs = new FireLazerEventArgs();
-        eventArgs.mDirection = 0;
-        eventArgs.mPowerLevel = mCurrentPowerLevel;
-        OnLazerFired(eventArgs);
     }
 }
