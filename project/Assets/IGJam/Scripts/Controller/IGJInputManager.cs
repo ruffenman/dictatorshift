@@ -362,11 +362,7 @@ public class IGJInputManager : MonoBehaviour
         }
 
         CombinedPlayer player = JamGame.instance.player;
-        for(int i=0;i<(int)BodyPart.BodyPartType.MAX;++i)
-        {
-            BodyPart bodyPart = player.GetBodyPart((BodyPart.BodyPartType)i);
-            bodyPart.ReceiveInput(inputStates[i]);
-        }
+        player.ReceiveInput(inputStates);
 	}
 
     private const string P1_X = "player1_x";

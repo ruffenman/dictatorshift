@@ -13,6 +13,15 @@ public class CombinedPlayer : WorldObject
         return bodyParts[(int)partType];
     }
 
+    public void ReceiveInput(IGJInputManager.InputState[] inputStates)
+    {
+        // TODO: Mess with player -> body assignments
+        for (int i = 0; i < inputStates.Length; ++i)
+        {
+            bodyParts[i].ReceiveInput(inputStates[i]);
+        }
+    }
+
 	new void Start ()
 	{
 		base.Start();
