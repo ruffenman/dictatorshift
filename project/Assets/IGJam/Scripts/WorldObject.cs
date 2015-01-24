@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class WorldObject : MonoBehaviour 
 {
-	static readonly float gravity = 2f;
+	static readonly float gravity = 5f;
 
 	public enum ObjectType
 	{
@@ -18,9 +18,9 @@ public class WorldObject : MonoBehaviour
 	public float stopVelocity = 1.0f;
 
 	// utility
-	private float health = 100;
-	CharacterController controller;
-	Vector3 velocity;
+	protected float health = 100;
+	protected CharacterController controller;
+	protected Vector3 velocity;
 
 	public void Start()
 	{
@@ -42,6 +42,11 @@ public class WorldObject : MonoBehaviour
 			health = Mathf.Max(0, health - damage);
 			UpdateHealth();
 		}
+	}
+
+	public Vector3 GetVelocity()
+	{
+		return velocity;
 	}
 
 	public void AddVelocity(Vector3 addedVelocity)
@@ -69,7 +74,7 @@ public class WorldObject : MonoBehaviour
 
 	void Move()
 	{
-		if ((velocity != Vector3.zero) || !controller.isGrounded)
+		if ((velocity.sqrMagnitude > 0) || (!controller.isGrounded))
 		{
 			Vector3 newVelocity = velocity;
 
@@ -93,7 +98,7 @@ public class WorldObject : MonoBehaviour
 				newVelocity.x = 0;
 			}
 
-			controller.Move(newVelocity * Time.deltaTime);
+			controller.Move((newVelocity + new Vector3(0.0001f, 0, 0)) * Time.deltaTime);
 			SetVelocity(newVelocity);
 		}
 	}

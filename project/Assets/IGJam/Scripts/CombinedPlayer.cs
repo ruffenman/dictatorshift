@@ -25,7 +25,7 @@ public class CombinedPlayer : WorldObject
         //{
         //    bodyParts[i].ReceiveInput(inputStates[i]);
         //}
-        bodyParts[(int)BodyPart.BodyPartType.ARMS].ReceiveInput(inputStates[0]);
+        bodyParts[(int)BodyPart.BodyPartType.BODY].ReceiveInput(inputStates[0]);
     }
 
 	new void Start ()
@@ -63,6 +63,10 @@ public class CombinedPlayer : WorldObject
 	{
 		if (!dead)
 		{
+			if (velocity != Vector3.zero)
+			{
+				Debug.Log("My velocity: " + velocity);
+			}
 			base.Update();
 			UpdateBodyParts();
 		}
