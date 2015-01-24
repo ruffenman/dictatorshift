@@ -22,7 +22,7 @@ public class Legs : BodyPart
 
 	protected override void OnInputReceived()
 	{
-		if (lastInputState.actionJustPressed && (lastInputState.direction != Vector3.zero))
+        if (lastInputState.actionJustPressed && (lastInputState.direction != IGJInputManager.InputDirection.None))
 		{
 			legVelocity.x += (lastInputState.direction.x * runSpeed);
 		}
