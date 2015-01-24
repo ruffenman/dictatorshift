@@ -37,8 +37,8 @@ public class Arms : BodyPart
 	Vector2[] armsOffsetsByAngle = new Vector2[(int)ANGLE.COUNT];
 	Vector2[] armsVelocitiesByAngle = new Vector2[(int)ANGLE.COUNT];
 
-	public Arms(int newPlayerIndex, Transform newSpriteTransform)
-		: base(BodyPart.BodyPartType.ARMS, newPlayerIndex, newSpriteTransform)
+	public Arms(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
+		: base(BodyPart.BodyPartType.ARMS, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
 	{
 		armsColliderObject = new GameObject();
 		armsColliderObject.AddComponent<BoxCollider>().size = new Vector3(1,1,1);
