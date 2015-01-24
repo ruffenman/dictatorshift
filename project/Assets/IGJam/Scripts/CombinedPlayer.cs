@@ -63,10 +63,6 @@ public class CombinedPlayer : WorldObject
 	{
 		if (!dead)
 		{
-			if (velocity != Vector3.zero)
-			{
-				Debug.Log("My velocity: " + velocity);
-			}
 			base.Update();
 			UpdateBodyParts();
 		}
