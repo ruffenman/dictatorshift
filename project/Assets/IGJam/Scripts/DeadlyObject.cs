@@ -3,6 +3,7 @@ using System.Collections;
 
 public class DeadlyObject : WorldObject 
 {
+	public bool destroyOnCollision = false;
 	float damage = 100.0f;
 
 	public void OnCollideWithTarget(GameObject target)
@@ -11,7 +12,10 @@ public class DeadlyObject : WorldObject
 		if (worldObject != null)
 		{
 			worldObject.TakeDamage(damage);
-			Destroy(gameObject);
+			if(destroyOnCollision)
+			{
+				Destroy(gameObject);
+			}
 		}
 	}
 }
