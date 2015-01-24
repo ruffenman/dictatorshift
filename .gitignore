@@ -4,3 +4,4 @@ project/Temp/
 *.sln
 project/obj/
 *.suo
+*.userprefs
