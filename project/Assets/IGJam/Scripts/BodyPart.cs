@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
 public class BodyPart
 {
 	public enum BodyPartType
@@ -24,6 +23,8 @@ public class BodyPart
 		playerIndex = newPlayerIndex;
 		spriteTransform = newSpriteTransform;
 		combinedPlayer = newCombinedPlayer;
+
+        lastInputState = new IGJInputManager.InputState() {directionVec=Vector3.zero};
 	}
 
 	// Update is called once per frame
@@ -33,9 +34,9 @@ public class BodyPart
 
     public void ReceiveInput(IGJInputManager.InputState inputState)
     {
-        lastInputState.direction.x = inputState.direction.x;
-        lastInputState.direction.y = inputState.direction.y;
-        lastInputState.direction.z = 0;
+        lastInputState.directionVec.x = inputState.directionVec.x;
+        lastInputState.directionVec.y = inputState.directionVec.y;
+        lastInputState.directionVec.z = 0;
         lastInputState.actionPressed = inputState.actionPressed;
         lastInputState.actionJustPressed = inputState.actionJustPressed;
 
