@@ -26,7 +26,12 @@ public class Arms : BodyPart
 		public ANGLE inputAngle = ANGLE.NONE;
 		public bool angleChanged = false;
 	}
-
+	
+	public bool isHoldingObject = false;
+	public GameObject heldObject = null;
+	
+	List<GameObject> pickupCollisions = new List<GameObject>();
+	List<GameObject> attackableCollisions = new List<GameObject>();
 	GameObject armsPrefab = null;
 	SpriteRenderer armsSprite = null;
 	Transform armsTransform = null;
@@ -34,21 +39,16 @@ public class Arms : BodyPart
 	Vector2[] armsOffsetsByAngle = new Vector2[(int)ANGLE.COUNT];
 	Vector2[] armsVelocitiesByAngle = new Vector2[(int)ANGLE.COUNT];
 	Sprite[] armsSpritesByAngle = new Sprite[(int)ANGLE.COUNT];
-	
-	public bool isHoldingObject = false;
-	public GameObject heldObject = null;
-	
-	public List<GameObject> pickupCollisions = new List<GameObject>();
-	public List<GameObject> attackableCollisions = new List<GameObject>();
 
 	public Arms(int newPlayerIndex, Transform newSpriteTransform)
 		: base(BodyPart.BodyPartType.ARMS, newPlayerIndex, newSpriteTransform)
 	{
-		// link the arms prefab to the arms class
-		armsPrefab = null;
+		
+		armsPrefab = newSpriteTransform.gameObject;
 		armsSprite = armsPrefab.GetComponent<SpriteRenderer>();
 		armsTransform = armsPrefab.transform;
 		
+		// TODO THESE WILL PROBABLY BE HANDLED BY THE ANIMATION CONTROL *******************************
 		armsOffsetsByAngle[(int)ANGLE.NONE] = new Vector2(0,0);
 		armsOffsetsByAngle[(int)ANGLE.UP] = new Vector2(0,0);
 		armsOffsetsByAngle[(int)ANGLE.DOWN] = new Vector2(0,0);
@@ -78,6 +78,7 @@ public class Arms : BodyPart
 		armsSpritesByAngle[(int)ANGLE.UPRIGHT] = (Sprite)Resources.Load ("");
 		armsSpritesByAngle[(int)ANGLE.DOWNLEFT] = (Sprite)Resources.Load ("");
 		armsSpritesByAngle[(int)ANGLE.DOWNRIGHT] = (Sprite)Resources.Load ("");
+		// TODO THESE WILL PROBABLY BE HANDLED BY THE ANIMATION CONTROL *******************************
 		
 		inputState = new InputState();
 	}
