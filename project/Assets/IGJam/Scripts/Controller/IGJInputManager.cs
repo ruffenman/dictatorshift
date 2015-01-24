@@ -115,7 +115,7 @@ public class IGJInputManager : MonoBehaviour
 
         if (p1_inputVec.sqrMagnitude > 0 || p1_dirVec.sqrMagnitude > 0 || p1_actionPressed || p1_actionJustPressed)
         {
-            //Debug.Log("\tp1_input_vec: " + p1_inputVec + "\tp1_dir: " + p1_dirVec + "\tp1_actionPressed: " + p1_actionPressed + "\tp1_actionJustPressed: " + p1_actionJustPressed);
+            Debug.Log("\tp1_input_vec: " + p1_inputVec + "\tp1_dir: " + p1_dirVec + "\tp1_actionPressed: " + p1_actionPressed + "\tp1_actionJustPressed: " + p1_actionJustPressed);
         }
 
         // Process player 2
@@ -196,7 +196,7 @@ public class IGJInputManager : MonoBehaviour
 
         if (p2_inputVec.sqrMagnitude > 0 || p2_dirVec.sqrMagnitude > 0 || p2_actionPressed || p2_actionJustPressed)
         {
-            //Debug.Log("\tp2_input_vec: " + p2_inputVec + "\tp2_dir: " + p2_dirVec + "\tp2_actionPressed: " + p2_actionPressed + "\tp2_actionJustPressed: " + p2_actionJustPressed);
+            Debug.Log("\tp2_input_vec: " + p2_inputVec + "\tp2_dir: " + p2_dirVec + "\tp2_actionPressed: " + p2_actionPressed + "\tp2_actionJustPressed: " + p2_actionJustPressed);
         }
 
         // Process player 3
@@ -277,7 +277,7 @@ public class IGJInputManager : MonoBehaviour
 
         if (p3_inputVec.sqrMagnitude > 0 || p3_dirVec.sqrMagnitude > 0 || p3_actionPressed || p3_actionJustPressed)
         {
-            //Debug.Log("\tp3_input_vec: " + p3_inputVec + "\tp3_dir: " + p3_dirVec + "\tp3_actionPressed: " + p3_actionPressed + "\tp3_actionJustPressed: " + p3_actionJustPressed);
+            Debug.Log("\tp3_input_vec: " + p3_inputVec + "\tp3_dir: " + p3_dirVec + "\tp3_actionPressed: " + p3_actionPressed + "\tp3_actionJustPressed: " + p3_actionJustPressed);
         }
 
         // Process player 4
@@ -358,7 +358,7 @@ public class IGJInputManager : MonoBehaviour
 
         if (p4_inputVec.sqrMagnitude > 0 || p4_dirVec.sqrMagnitude > 0 || p4_actionPressed || p4_actionJustPressed)
         {
-            //Debug.Log("\tp4_input_vec: " + p4_inputVec + "\tp4_dir: " + p4_dirVec + "\tp4_actionPressed: " + p4_actionPressed + "\tp4_actionJustPressed: " + p4_actionJustPressed);
+            Debug.Log("\tp4_input_vec: " + p4_inputVec + "\tp4_dir: " + p4_dirVec + "\tp4_actionPressed: " + p4_actionPressed + "\tp4_actionJustPressed: " + p4_actionJustPressed);
         }
 
         CombinedPlayer player = JamGame.instance.player;
