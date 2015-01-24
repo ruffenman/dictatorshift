@@ -44,18 +44,6 @@ public class WorldObject : MonoBehaviour
 		}
 	}
 
-	public void ApplyVelocity(Vector3 newVelocity)
-	{
-	}
-
-	void UpdateHealth()
-	{
-		if (health == 0)
-		{
-			Destroy(gameObject);
-		}
-	}
-
 	public void AddVelocity(Vector3 addedVelocity)
 	{
 		SetVelocity(velocity + addedVelocity);
@@ -64,6 +52,19 @@ public class WorldObject : MonoBehaviour
 	public void SetVelocity(Vector3 newVelocity)
 	{
 		velocity = newVelocity;
+	}
+
+	void UpdateHealth()
+	{
+		if (health == 0)
+		{
+			Die();
+		}
+	}
+
+	protected virtual void Die()
+	{
+		Destroy(gameObject);
 	}
 
 	void Move()

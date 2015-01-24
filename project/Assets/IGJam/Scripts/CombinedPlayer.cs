@@ -6,7 +6,7 @@ public class CombinedPlayer : WorldObject
 	BodyPart[] bodyParts;
 	Transform[] bodyPartTransforms;
 
-	void Start () 
+	new void Start () 
 	{
 		base.Start();
 
@@ -43,5 +43,10 @@ public class CombinedPlayer : WorldObject
 
 	void UpdateSprites()
 	{
+	}
+
+	protected override void Die()
+	{
+		base.Die();
 	}
 }
