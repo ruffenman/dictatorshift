@@ -11,6 +11,9 @@ public class Lazer : MonoBehaviour
         High
     }
 
+    private PowerLevel mPowerLevel = PowerLevel.None;
+    private IGJInputManager.InputDirection mDirection;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -20,11 +23,21 @@ public class Lazer : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-	
+	    //expand me PLEASE
 	}
 
-    public void SetLazerStrength(PowerLevel powerLevel, Vector3 direction)
+    public void SetLazerStrength(PowerLevel powerLevel, IGJInputManager.InputDirection direction)
     {
+        mPowerLevel = powerLevel;
+        mDirection = direction;
 
+        if (mPowerLevel == PowerLevel.Low)
+        {
+            transform.localScale -= new Vector3(0.0f, 2.5f, 0.0f);
+        }
+        else if (mPowerLevel == PowerLevel.High)
+        {
+            transform.localScale += new Vector3(0.0f, 2.5f, 0.0f);
+        }
     }
 }

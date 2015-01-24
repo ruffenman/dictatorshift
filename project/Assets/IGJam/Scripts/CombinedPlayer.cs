@@ -57,7 +57,7 @@ public class CombinedPlayer : WorldObject
 		base.Die();
 	}
 
-    public void FireTheLazer(Lazer.PowerLevel powerLevel, Vector3 direction)
+    public void FireTheLazer(Lazer.PowerLevel powerLevel, IGJInputManager.InputDirection direction)
     {
         const float xOffset = 1.3f;
         const float yOffset = 0.6f;
