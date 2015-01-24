@@ -16,12 +16,14 @@ public class BodyPart
 	BodyPartType bodyPartType;
 	int playerIndex;
 	Transform spriteTransform;
+	CombinedPlayer combinedPlayer;
 
-	public BodyPart(BodyPartType newBodyPartType, int newPlayerIndex, Transform newSpriteTransform)
+	public BodyPart(BodyPartType newBodyPartType, int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 	{
 		bodyPartType = newBodyPartType;
 		playerIndex = newPlayerIndex;
 		spriteTransform = newSpriteTransform;
+		combinedPlayer = newCombinedPlayer;
 	}
 
 	// Update is called once per frame
