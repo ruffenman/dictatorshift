@@ -12,6 +12,11 @@ public class CombinedPlayer : MonoBehaviour
 	float moveDepreciation = 0.9f;
 	float stopVelocitySquared = 1.0f;
 
+    public BodyPart GetBodyPart(BodyPart.BodyPartType partType)
+    {
+        return bodyParts[(int)partType];
+    }
+
 	public void AddPlayerVelocity(Vector3 addedVelocity)
 	{
 		SetPlayerVelocity(velocity + addedVelocity);

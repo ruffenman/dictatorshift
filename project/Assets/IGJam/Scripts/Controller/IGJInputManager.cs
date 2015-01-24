@@ -37,7 +37,6 @@ public class IGJInputManager : MonoBehaviour
         {
             p1_dir.x = -1;
         }
-
         if (p1_y > Mathf.Sin(1 * Mathf.PI / 8))
         {
             p1_dir.y = 1;
@@ -52,9 +51,9 @@ public class IGJInputManager : MonoBehaviour
         inputStates[0].actionPressed = p1_actionPressed;
         inputStates[0].actionJustPressed = p1_actionJustPressed;
 
-        Debug.Log("p1_dir: " + p1_dir);
-        Debug.Log("p1_actionPressed: " + p1_actionPressed);
-        Debug.Log("p1_actionJustPressed: " + p1_actionJustPressed);
+        //Debug.Log("p1_dir: " + p1_dir);
+        //Debug.Log("p1_actionPressed: " + p1_actionPressed);
+        //Debug.Log("p1_actionJustPressed: " + p1_actionJustPressed);
 
         // Process player 2
         float p2_x = Input.GetAxis(P2_X);
@@ -74,9 +73,11 @@ public class IGJInputManager : MonoBehaviour
         bool p4_actionPressed = Input.GetButton(P4_ACTION);
         bool p4_actionJustPressed = Input.GetButtonDown(P4_ACTION);
 
-        for(int i=0;i<bodyParts.Length;++i)
+        CombinedPlayer player = JamGame.instance.player;
+        for(int i=0;i<(int)BodyPart.BodyPartType.MAX;++i)
         {
-            bodyParts[i].ReceiveInput(inputStates[i]);
+            BodyPart bodyPart = player.GetBodyPart((BodyPart.BodyPartType)i);
+            bodyPart.ReceiveInput(inputStates[i]);
         }
 	}
 
@@ -92,9 +93,6 @@ public class IGJInputManager : MonoBehaviour
     private const string P4_X = "player4_x";
     private const string P4_Y = "player4_y";
     private const string P4_ACTION = "player4_action";
-
-    [SerializeField]
-    private BodyPart[] bodyParts;
 
     private InputState[] inputStates;
 }

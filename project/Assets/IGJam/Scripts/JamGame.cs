@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class JamGame : MonoBehaviour {
+public class JamGame : MonoBehaviour 
+{
+    public static JamGame instance;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public CombinedPlayer player;
+
+    public void Awake()
+    {
+        if (!instance)
+        {
+            instance = this;
+        }
+        else
+        {
+            Debug.LogError("Tried to create multiple JamGames");
+        }
+    }
 }
