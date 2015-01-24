@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Head : BodyPart
 {
-	public Head(int newPlayerIndex)
-		: base(BodyPart.BodyPartType.HEAD, newPlayerIndex)
+	public Head(int newPlayerIndex, Transform newSpriteTransform)
+		: base(BodyPart.BodyPartType.HEAD, newPlayerIndex, newSpriteTransform)
 	{
 	}
 
