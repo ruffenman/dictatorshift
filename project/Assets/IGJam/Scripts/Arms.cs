@@ -19,8 +19,8 @@ public class Arms : BodyPart
 	
 	static float FULL = 1;
 	static float FRAC = 0.6f;
-	static float THROW_MULTIPLIER = 5f;
-	static float FLAIL_MULTIPLIER = 2f;
+	static float THROW_MULTIPLIER = 50f;
+	static float FLAIL_MULTIPLIER = 5f;
 	
 	public class InputState
 	{
@@ -39,6 +39,7 @@ public class Arms : BodyPart
 	GameObject armsColliderObject = null;
 	ArmsCollider armsCollider = null;
 	InputState inputState = null;
+	bool initialized = false;
 	
 	Vector2[] armsOffsetsByAngle = new Vector2[(int)ANGLE.COUNT];
 	Vector2[] armsVelocitiesByAngle = new Vector2[(int)ANGLE.COUNT];
@@ -48,27 +49,26 @@ public class Arms : BodyPart
 	{
 		armsColliderObject = new GameObject();
 		armsColliderObject.name = "Arms Collider -- owned by Arms.cs";
+		armsColliderObject.AddComponent<ArmsCollider>();
 		armsCollider = armsColliderObject.GetComponent<ArmsCollider>();
 		BoxCollider bc = armsColliderObject.AddComponent<BoxCollider>();
 		bc.size = new Vector3(1,1,1);
 		bc.isTrigger = true;
 		Rigidbody rb = armsColliderObject.AddComponent<Rigidbody>();
 		rb.useGravity = false;
-		rb.constraints = RigidbodyConstraints.FreezePositionZ;
-		rb.constraints = RigidbodyConstraints.FreezeRotation;
-		armsColliderObject.AddComponent<ArmsCollider>();
+		rb.constraints = RigidbodyConstraints.FreezeAll;
 		armsColliderObject.transform.parent = newCombinedPlayer.transform;
 		armsColliderObject.transform.localPosition = new Vector3(0,0,0);
 		
-		armsOffsetsByAngle[(int)ANGLE.NONE] = new Vector2(0,0);
+		armsOffsetsByAngle[(int)ANGLE.NONE] = new Vector2(FRAC,0);
 		armsOffsetsByAngle[(int)ANGLE.UP] = new Vector2(0,FULL);
 		armsOffsetsByAngle[(int)ANGLE.DOWN] = new Vector2(0,-FULL);
 		armsOffsetsByAngle[(int)ANGLE.LEFT] = new Vector2(-FULL,0);
-		armsOffsetsByAngle[(int)ANGLE.RIGHT] = new Vector2(0,FULL);
+		armsOffsetsByAngle[(int)ANGLE.RIGHT] = new Vector2(FULL,0);
 		armsOffsetsByAngle[(int)ANGLE.UPLEFT] = new Vector2(-FRAC,FRAC);
 		armsOffsetsByAngle[(int)ANGLE.UPRIGHT] = new Vector2(FRAC,FRAC);
 		armsOffsetsByAngle[(int)ANGLE.DOWNLEFT] = new Vector2(-FRAC,-FRAC);
-		armsOffsetsByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(-FRAC,FRAC);
+		armsOffsetsByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(FRAC,-FRAC);
 		
 		armsVelocitiesByAngle[(int)ANGLE.NONE] = new Vector2(0,0);
 		armsVelocitiesByAngle[(int)ANGLE.UP] = new Vector2(0,FULL);
@@ -78,20 +78,25 @@ public class Arms : BodyPart
 		armsVelocitiesByAngle[(int)ANGLE.UPLEFT] = new Vector2(-FRAC,FRAC);
 		armsVelocitiesByAngle[(int)ANGLE.UPRIGHT] = new Vector2(FRAC,FRAC);
 		armsVelocitiesByAngle[(int)ANGLE.DOWNLEFT] = new Vector2(-FRAC,-FRAC);
-		armsVelocitiesByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(-FRAC,FRAC);
+		armsVelocitiesByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(FRAC,-FRAC);
 		
 		inputState = new InputState();
+		initialized = true;
 	}
 
 	// Update is called once per frame
 	public override void Update()
 	{
+		if(!initialized)
+		{
+			return;
+		}
+	
 		ParseInput();
 	
 		// UPDATE ARMS POSITION
 		if(inputState.angleChanged)
 		{
-			Debug.Log ("Arms.cs -- update arm angle");
 			armsColliderObject.transform.localPosition = armsOffsetsByAngle[(int)inputState.inputAngle];
 			inputState.angleChanged = false;
 			
@@ -110,9 +115,9 @@ public class Arms : BodyPart
 		if(inputState.inputButton && inputState.buttonChanged)
 		{
 			// PICK UP OBJECT
-			GameObject interactible = armsCollider.GetFirstInteractible();
-			if(interactible != null)
+			if(armsCollider.CanReturnInteractible() == true)
 			{
+				GameObject interactible = armsCollider.GetFirstInteractible();
 				Debug.Log ("Arms.cs -- pick up object");
 				isHoldingObject = true;
 				heldObject = interactible;
@@ -133,20 +138,27 @@ public class Arms : BodyPart
 		// BUTTON STILL HELD DOWN
 		else if(inputState.inputButton && inputState.buttonChanged == false)
 		{
-			// FLAIL AT OBJECT
-			GameObject interactible = armsCollider.GetFirstInteractible();
-			if(interactible != null)
+			if(isHoldingObject == false)
 			{
-				Debug.Log ("Arms.cs -- flail at object");
-				WorldObject obj = interactible.GetComponent<WorldObject>();
-				if(obj != null)
+				// FLAIL AT OBJECT
+				GameObject interactible = armsCollider.GetFirstInteractible();
+				if(interactible != null)
 				{
-					obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * FLAIL_MULTIPLIER);
+					Debug.Log ("Arms.cs -- flail at object");
+					WorldObject obj = interactible.GetComponent<WorldObject>();
+					if(obj != null)
+					{
+						obj.SetVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * FLAIL_MULTIPLIER);
+					}
+					else
+					{
+						Debug.LogWarning ("Arms.cs -- no WorldObject script on held object!");
+					}
 				}
-				else
-				{
-					Debug.LogWarning ("Arms.cs -- no WorldObject script on held object!");
-				}
+			}
+			else
+			{
+				heldObject.transform.localPosition = new Vector3(0,0,0);
 			}
 		}
 		
@@ -162,14 +174,13 @@ public class Arms : BodyPart
 				WorldObject obj = heldObject.GetComponent<WorldObject>();
 				if(obj != null)
 				{
-					obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * THROW_MULTIPLIER);
+					obj.SetVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * THROW_MULTIPLIER);
 				}
 				else
 				{
 					Debug.LogWarning ("Arms.cs -- no WorldObject script on held object!");
 				}
 				
-				heldObject = null;
 				isHoldingObject = false;
 			}
 			
@@ -188,6 +199,7 @@ public class Arms : BodyPart
 	void ParseInput()
 	{	
 		bool down;
+		ANGLE old = inputState.inputAngle;
 		IGJInputManager.InputDirection direction = lastInputState.direction;
 		if(lastInputState == null)
 		{
@@ -198,6 +210,9 @@ public class Arms : BodyPart
 		down = lastInputState.actionPressed;
 		
 		// HACK TESTING OVERRIDE *****************************************************************
+		if(Input.GetKey (KeyCode.F)) {down = true; }
+		else {down = false; }
+		
 		if(Input.GetKey (KeyCode.W)) { inputState.inputAngle = ANGLE.UP; }
 		else if(Input.GetKey (KeyCode.X)) { inputState.inputAngle = ANGLE.DOWN; }
 		else if(Input.GetKey (KeyCode.A)) { inputState.inputAngle = ANGLE.LEFT; }
@@ -206,6 +221,7 @@ public class Arms : BodyPart
 		else if(Input.GetKey (KeyCode.E)) { inputState.inputAngle = ANGLE.UPRIGHT; }
 		else if(Input.GetKey (KeyCode.Z)) { inputState.inputAngle = ANGLE.DOWNLEFT; }
 		else if(Input.GetKey (KeyCode.C)) { inputState.inputAngle = ANGLE.DOWNRIGHT; }
+		else  { inputState.inputAngle = ANGLE.NONE; }
 		// HACK TESTING OVERRIDE *****************************************************************
 		
 		/*
@@ -222,6 +238,11 @@ public class Arms : BodyPart
 			default: inputState.inputAngle = ANGLE.NONE; break;
 		}
 		*/
+		
+		if (inputState.inputAngle != old)
+		{
+			inputState.angleChanged = true;
+		}
 		
 		if(down != inputState.inputButton)
 		{
