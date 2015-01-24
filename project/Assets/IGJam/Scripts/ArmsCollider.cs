@@ -5,17 +5,25 @@ using System.Collections.Generic;
 public class ArmsCollider : MonoBehaviour 
 {
 	List<GameObject> interactibleCollisions = new List<GameObject>();
+
+	public bool CanReturnInteractible()
+	{
+		return ((interactibleCollisions.Count > 0) && (interactibleCollisions[0] != null));
+	}
 	
 	public GameObject GetFirstInteractible()
 	{
-		if(interactibleCollisions.Count > 0)
-	    {
-			while(interactibleCollisions.Count > 0 && interactibleCollisions[0] == null)
+		while(interactibleCollisions.Count > 0)
+		{
+			if(interactibleCollisions[0] == null)
 			{
 				interactibleCollisions.RemoveAt (0);
 				Debug.LogWarning ("Arms.cs cleared invalid interactible from list");
 			}
-			return interactibleCollisions[0];
+			else
+			{
+				return interactibleCollisions[0];
+			}
 		}
 		return null;
 	}
@@ -30,7 +38,8 @@ public class ArmsCollider : MonoBehaviour
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if(other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE)
+		if(other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE &&
+			other.name != "Player")
 		{
 			ReportAddInteractiveCollision(other.gameObject);
 		}
@@ -38,7 +47,8 @@ public class ArmsCollider : MonoBehaviour
 	
 	void OnTriggerExit(Collider other)
 	{
-		if(other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE)
+		if(other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE &&
+		   other.name != "Player") 
 		{
 			ReportRemoveInteractiveCollision(other.gameObject);
 		}
@@ -49,7 +59,7 @@ public class ArmsCollider : MonoBehaviour
 	{
 		if(interactibleCollisions.Contains (collision) == false)
 		{
-			Debug.Log ("ArmsCollider.cs -- new pickup in range");
+			Debug.Log ("ArmsCollider.cs -- new interact in range");
 			interactibleCollisions.Add (collision);
 		}
 		else
@@ -64,6 +74,7 @@ public class ArmsCollider : MonoBehaviour
 	{
 		if(interactibleCollisions.Contains (collision))
 		{
+			Debug.Log ("ArmsCollider.cs -- interact out of range");
 			interactibleCollisions.Remove (collision);
 		}
 		else
