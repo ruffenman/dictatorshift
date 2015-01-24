@@ -4,19 +4,9 @@ using System;
 
 public class Head : BodyPart
 {
-
-    public enum PowerLevel
-    {
-        None,
-        Low,
-        Medium,
-        High
-    }
-
     private double mPowerLevelTimer = 0.0f;
     private bool mShouldFire = false;
-    private PowerLevel mCurrentPowerLevel = PowerLevel.None;
-    private Transform mTransform;
+    private Lazer.PowerLevel mCurrentPowerLevel = Lazer.PowerLevel.None;
 
 	public Head(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 		: base(BodyPart.BodyPartType.HEAD, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
@@ -33,18 +23,18 @@ public class Head : BodyPart
         if (mShouldFire)
         {
             FireTheLazer();
-            mCurrentPowerLevel = PowerLevel.None;
+            mCurrentPowerLevel = Lazer.PowerLevel.None;
         }
 	}
 
     private void UpdateFiringStatus()
     {
-        // check input on 
-        if (Input.GetKey(KeyCode.Space))
+        //if (lastInputState.actionPressed)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             mPowerLevelTimer += Time.deltaTime;
         }
-        else if (mCurrentPowerLevel != PowerLevel.None)
+        else if (mPowerLevelTimer > 0.0f)
         {
             mShouldFire = true;
             UpdatePowerLevel();
@@ -59,19 +49,21 @@ public class Head : BodyPart
 
         if (mPowerLevelTimer >= highPowerLevelTime)
         {
-            mCurrentPowerLevel = PowerLevel.High;
+            mCurrentPowerLevel = Lazer.PowerLevel.High;
         }
         else if (mPowerLevelTimer >= mediumPowerLevelTime)
         {
-            mCurrentPowerLevel = PowerLevel.Medium;
+            mCurrentPowerLevel = Lazer.PowerLevel.Medium;
         }
         else
         {
-            mCurrentPowerLevel = PowerLevel.Low;
+            mCurrentPowerLevel = Lazer.PowerLevel.Low;
         }
     }
 
     private void FireTheLazer()
     {
+        mShouldFire = false;
+        combinedPlayer.FireTheLazer(mCurrentPowerLevel, new Vector3(0, 0, 0));//lastInputState.direction);
     }
 }

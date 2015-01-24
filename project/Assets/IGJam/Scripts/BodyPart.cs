@@ -16,7 +16,7 @@ public class BodyPart
 	BodyPartType bodyPartType;
 	int playerIndex;
 	Transform spriteTransform;
-	CombinedPlayer combinedPlayer;
+	public CombinedPlayer combinedPlayer;
 
 	public BodyPart(BodyPartType newBodyPartType, int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 	{

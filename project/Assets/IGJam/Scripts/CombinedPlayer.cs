@@ -3,6 +3,8 @@ using System.Collections;
 
 public class CombinedPlayer : MonoBehaviour 
 {
+    public GameObject lazerPrefab;
+
 	BodyPart[] bodyParts;
 	Transform[] bodyPartTransforms;
 
@@ -36,10 +38,10 @@ public class CombinedPlayer : MonoBehaviour
 
 		// initialize body parts
 		bodyParts = new BodyPart[(int)BodyPart.BodyPartType.MAX];
-		bodyParts[(int)BodyPart.BodyPartType.HEAD] = new Head(0, bodyPartTransforms[(int)BodyPart.BodyPartType.HEAD], this);
-		bodyParts[(int)BodyPart.BodyPartType.BODY] = new Body(1, bodyPartTransforms[(int)BodyPart.BodyPartType.BODY], this);
-		bodyParts[(int)BodyPart.BodyPartType.ARMS] = new Arms(2, bodyPartTransforms[(int)BodyPart.BodyPartType.ARMS], this);
-		bodyParts[(int)BodyPart.BodyPartType.LEGS] = new Legs(3, bodyPartTransforms[(int)BodyPart.BodyPartType.LEGS], this);
+        bodyParts[(int)BodyPart.BodyPartType.HEAD] = new Head(0, bodyPartTransforms[(int)BodyPart.BodyPartType.HEAD], this);
+        bodyParts[(int)BodyPart.BodyPartType.BODY] = new Body(1, bodyPartTransforms[(int)BodyPart.BodyPartType.BODY], this);
+        bodyParts[(int)BodyPart.BodyPartType.ARMS] = new Arms(2, bodyPartTransforms[(int)BodyPart.BodyPartType.ARMS], this);
+        bodyParts[(int)BodyPart.BodyPartType.LEGS] = new Legs(3, bodyPartTransforms[(int)BodyPart.BodyPartType.LEGS], this);
 	}
 
 	void Update()
@@ -66,14 +68,14 @@ public class CombinedPlayer : MonoBehaviour
 		Vector3 newVelocity = velocity;
 
 		// gravity
-		if (controller.isGrounded)
+		//if (controller.isGrounded)
 		{
 			newVelocity.y = 0;
 		}
-		else
-		{
-			newVelocity.y -= gravity;
-		}
+		//else
+		//{
+		//	newVelocity.y -= gravity;
+		//}
 
 		// drag
 		if (newVelocity.sqrMagnitude > stopVelocitySquared)
@@ -88,4 +90,17 @@ public class CombinedPlayer : MonoBehaviour
 		controller.Move(newVelocity * Time.deltaTime);
 		SetPlayerVelocity(newVelocity);
 	}
+
+    public void FireTheLazer(Lazer.PowerLevel powerLevel, Vector3 direction)
+    {
+        const float xOffset = 1.3f;
+        const float yOffset = 0.6f;
+        GameObject Clone;
+        Vector3 pos = bodyPartTransforms[(int)BodyPart.BodyPartType.HEAD].position;
+        pos.x += xOffset;
+        pos.y += yOffset;
+        Clone = (Instantiate(lazerPrefab, pos, transform.rotation)) as GameObject;
+        Lazer lazer = (Lazer)Clone.GetComponent(typeof(Lazer));
+        lazer.SetLazerStrength(powerLevel, direction);
+    }
 }
