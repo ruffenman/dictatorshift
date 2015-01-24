@@ -41,12 +41,8 @@ public class Arms : BodyPart
 	public List<GameObject> pickupCollisions = new List<GameObject>();
 	public List<GameObject> attackableCollisions = new List<GameObject>();
 
-	public Arms(int newPlayerIndex)
-		: base(BodyPart.BodyPartType.ARMS, newPlayerIndex)
-=======
 	public Arms(int newPlayerIndex, Transform newSpriteTransform)
 		: base(BodyPart.BodyPartType.ARMS, newPlayerIndex, newSpriteTransform)
->>>>>>> 90a5fa8fdb487087073a88a4cbaee8f297e0d78b
 	{
 		// link the arms prefab to the arms class
 		armsPrefab = null;
