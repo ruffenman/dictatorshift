@@ -69,9 +69,8 @@ public class WorldObject : MonoBehaviour
 
 	void Move()
 	{
-		if (velocity != Vector3.zero)
+		if ((velocity != Vector3.zero) || !controller.isGrounded)
 		{
-			Debug.Log(velocity);
 			Vector3 newVelocity = velocity;
 
 			// gravity
