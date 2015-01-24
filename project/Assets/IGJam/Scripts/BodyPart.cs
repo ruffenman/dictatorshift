@@ -8,16 +8,19 @@ public class BodyPart
 		HEAD,
 		BODY,
 		ARMS,
-		LEGS
+		LEGS,
+		MAX
 	}
 
 	BodyPartType bodyPartType;
 	int playerIndex;
+	Transform spriteTransform;
 
-	public BodyPart(BodyPartType newBodyPartType, int newPlayerIndex)
+	public BodyPart(BodyPartType newBodyPartType, int newPlayerIndex, Transform newSpriteTransform)
 	{
 		bodyPartType = newBodyPartType;
 		playerIndex = newPlayerIndex;
+		spriteTransform = newSpriteTransform;
 	}
 
 	// Update is called once per frame
