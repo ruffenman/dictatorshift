@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class BodyPart
 {
 	public enum BodyPartType
@@ -24,4 +25,20 @@ public class BodyPart
 	public virtual void Update () 
 	{
 	}
+
+    public void ReceiveInput(IGJInputManager.InputState inputState)
+    {
+        lastInputState.direction.x = inputState.direction.x;
+        lastInputState.direction.y = inputState.direction.y;
+        lastInputState.direction.z = 0;
+        lastInputState.actionPressed = inputState.actionPressed;
+        lastInputState.actionJustPressed = inputState.actionJustPressed;
+
+        OnInputReceived();
+    }
+
+    protected void OnInputReceived()
+    { }
+
+    protected IGJInputManager.InputState lastInputState;
 }
