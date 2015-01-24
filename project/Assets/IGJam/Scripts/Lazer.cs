@@ -13,6 +13,11 @@ public class Lazer : MonoBehaviour
 
     private PowerLevel mPowerLevel = PowerLevel.None;
     private IGJInputManager.InputDirection mDirection;
+    private float mAngle = 0.0f;
+
+    private Vector3 mMidPosVec;
+    private Vector3 mMidScaleVec;
+    private Vector3 mEndPosVec;
 
     private Transform mPivot = null;
     private Transform mMiddleSection = null;
@@ -24,16 +29,18 @@ public class Lazer : MonoBehaviour
         mPivot = transform.FindChild("Pivot");
         mMiddleSection = mPivot.FindChild("Middle");
         mEndSection = mPivot.FindChild("End");
+
+        mPivot.localRotation = Quaternion.AngleAxis(mAngle, Vector3.forward);
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-        const float SCALE = 100.0f;
+        const float SCALE = 10.0f;
         float sizeIncrease = Time.deltaTime;
-        mMiddleSection.position += new Vector3(sizeIncrease * SCALE, 0.0f, 0.0f);
-        mMiddleSection.localScale += new Vector3(0.0f, sizeIncrease * 2.5f * SCALE, 0.0f);
-        mEndSection.position += new Vector3(sizeIncrease * 2.0f * SCALE, 0.0f, 0.0f);
+        mMiddleSection.localPosition += new Vector3(sizeIncrease * SCALE, 0.0f, 0.0f);
+        mMiddleSection.localScale += new Vector3(0.0f, sizeIncrease * 12.5f * SCALE, 0.0f);
+        mEndSection.localPosition += new Vector3(sizeIncrease * 2.0f * SCALE, 0.0f, 0.0f);
 
         if (mMiddleSection.localScale.y >= 50)
         {
@@ -55,29 +62,29 @@ public class Lazer : MonoBehaviour
             transform.localScale += new Vector3(0.0f, 2.5f, 0.0f);
         }
 
-        float angle = 0.0f;
-        switch (direction)
+        mAngle = 0.0f;
+        switch (mDirection)
         {
             case IGJInputManager.InputDirection.UpRight:
-                angle = 45.0f;
+                mAngle = 45.0f;
                 break;
             case IGJInputManager.InputDirection.Up:
-                angle = 90.0f;
+                mAngle = 90.0f;
                 break;
             case IGJInputManager.InputDirection.UpLeft:
-                angle = 135.0f;
+                mAngle = 135.0f;
                 break;
             case IGJInputManager.InputDirection.Left:
-                angle = 180.0f;
+                mAngle = 180.0f;
                 break;
             case IGJInputManager.InputDirection.DownLeft:
-                angle = 225.0f;
+                mAngle = 225.0f;
                 break;
             case IGJInputManager.InputDirection.Down:
-                angle = 270.0f;
+                mAngle = 270.0f;
                 break;
             case IGJInputManager.InputDirection.DownRight:
-                angle = 315.0f;
+                mAngle = 315.0f;
                 break;
             case IGJInputManager.InputDirection.Right:
                 // fallthrough
@@ -85,6 +92,5 @@ public class Lazer : MonoBehaviour
                 // do nothing
                 break;
         }
-        mPivot.Rotate(Vector3.forward, angle);
     }
 }
