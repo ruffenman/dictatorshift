@@ -52,9 +52,19 @@ public class CombinedPlayer : WorldObject
 	{
 	}
 
+	void OnTriggerEnter(Collider other)
+	{
+		DeadlyObject deadlyObject = other.GetComponent<DeadlyObject>();
+		if (deadlyObject != null)
+		{
+			Debug.Log("Collision");
+		}
+	}
+
 	protected override void Die()
 	{
 		base.Die();
+		Debug.Log("I'M DEAD!");
 	}
 
     public void FireTheLazer(Lazer.PowerLevel powerLevel, IGJInputManager.InputDirection direction)

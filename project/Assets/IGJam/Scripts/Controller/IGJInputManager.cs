@@ -196,7 +196,7 @@ public class IGJInputManager : MonoBehaviour
 
         if (p2_inputVec.sqrMagnitude > 0 || p2_dirVec.sqrMagnitude > 0 || p2_actionPressed || p2_actionJustPressed)
         {
-            Debug.Log("\tp2_input_vec: " + p2_inputVec + "\tp2_dir: " + p2_dirVec + "\n\tp2_actionPressed: " + p2_actionPressed + "\n\tp2_actionJustPressed: " + p2_actionJustPressed);
+            //Debug.Log("\tp2_input_vec: " + p2_inputVec + "\tp2_dir: " + p2_dirVec + "\n\tp2_actionPressed: " + p2_actionPressed + "\n\tp2_actionJustPressed: " + p2_actionJustPressed);
         }
 
         // Process player 3
