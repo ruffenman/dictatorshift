@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CombinedPlayer : MonoBehaviour 
+public class CombinedPlayer : WorldObject 
 {
 	BodyPart[] bodyParts;
 	Transform[] bodyPartTransforms;
@@ -27,9 +27,9 @@ public class CombinedPlayer : MonoBehaviour
 		velocity = newVelocity;
 	}
 
-	void Start () 
+	new void Start ()
 	{
-		controller = GetComponent<CharacterController>();
+		base.Start();
 
 		// initialize sprites
 		Transform graphicsTransform = transform.Find("Graphics");
@@ -47,11 +47,11 @@ public class CombinedPlayer : MonoBehaviour
 		bodyParts[(int)BodyPart.BodyPartType.LEGS] = new Legs(3, bodyPartTransforms[(int)BodyPart.BodyPartType.LEGS], this);
 	}
 
-	void Update()
+	public override void Update()
 	{
+		base.Update();
 		UpdateBodyParts();
 		UpdateSprites();
-		Move();
 	}
 
 	void UpdateBodyParts () 
@@ -66,31 +66,8 @@ public class CombinedPlayer : MonoBehaviour
 	{
 	}
 
-	void Move()
+	protected override void Die()
 	{
-		Vector3 newVelocity = velocity;
-
-		// gravity
-		if (controller.isGrounded)
-		{
-			newVelocity.y = 0;
-		}
-		else
-		{
-			newVelocity.y -= gravity;
-		}
-
-		// drag
-		if (newVelocity.sqrMagnitude > stopVelocitySquared)
-		{
-			newVelocity.x *= moveDepreciation;
-		}
-		else
-		{
-			newVelocity.x = 0;
-		}
-
-		controller.Move(newVelocity * Time.deltaTime);
-		SetPlayerVelocity(newVelocity);
+		base.Die();
 	}
 }
