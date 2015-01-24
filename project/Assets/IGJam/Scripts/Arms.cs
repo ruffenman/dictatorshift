@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
-public class Arms : BodyPart 
-{	
+public class Arms : BodyPart
+{
 	public enum ANGLE
 	{
 		NONE,
@@ -30,25 +29,29 @@ public class Arms : BodyPart
 	public bool isHoldingObject = false;
 	public GameObject heldObject = null;
 	
-	List<GameObject> pickupCollisions = new List<GameObject>();
-	List<GameObject> attackableCollisions = new List<GameObject>();
-	GameObject armsPrefab = null;
-	SpriteRenderer armsSprite = null;
-	Transform armsTransform = null;
+	
+	GameObject armsColliderObject = null;
+	ArmsCollider armsCollider = null;
 	InputState inputState = null;
+	
 	Vector2[] armsOffsetsByAngle = new Vector2[(int)ANGLE.COUNT];
 	Vector2[] armsVelocitiesByAngle = new Vector2[(int)ANGLE.COUNT];
-	Sprite[] armsSpritesByAngle = new Sprite[(int)ANGLE.COUNT];
 
 	public Arms(int newPlayerIndex, Transform newSpriteTransform)
 		: base(BodyPart.BodyPartType.ARMS, newPlayerIndex, newSpriteTransform)
 	{
+		armsColliderObject = new GameObject();
+		armsColliderObject.AddComponent<BoxCollider>().size = new Vector3(1,1,1);
+		armsColliderObject.AddComponent<Rigidbody>();
+		armsColliderObject.AddComponent<ArmsCollider>();
+		armsCollider = armsColliderObject.GetComponent<ArmsCollider>();
 		
-		armsPrefab = newSpriteTransform.gameObject;
-		armsSprite = armsPrefab.GetComponent<SpriteRenderer>();
-		armsTransform = armsPrefab.transform;
+		// TODO FETCH THE CHARACTER ROOT ********************
+		armsColliderObject.transform.parent = null;
+		// TODO FETCH THE CHARACTER ROOT ********************
 		
-		// TODO THESE WILL PROBABLY BE HANDLED BY THE ANIMATION CONTROL *******************************
+		armsColliderObject.transform.localPosition = new Vector3(0,0,0);
+		
 		armsOffsetsByAngle[(int)ANGLE.NONE] = new Vector2(0,0);
 		armsOffsetsByAngle[(int)ANGLE.UP] = new Vector2(0,0);
 		armsOffsetsByAngle[(int)ANGLE.DOWN] = new Vector2(0,0);
@@ -69,17 +72,6 @@ public class Arms : BodyPart
 		armsVelocitiesByAngle[(int)ANGLE.DOWNLEFT] = new Vector2(0,0);
 		armsVelocitiesByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(0,0);
 		
-		armsSpritesByAngle[(int)ANGLE.NONE] = (Sprite)Resources.Load ("");
-		armsSpritesByAngle[(int)ANGLE.UP] = (Sprite)Resources.Load ("");
-		armsSpritesByAngle[(int)ANGLE.DOWN] = (Sprite)Resources.Load ("");
-		armsSpritesByAngle[(int)ANGLE.LEFT] = (Sprite)Resources.Load ("");
-		armsSpritesByAngle[(int)ANGLE.RIGHT] = (Sprite)Resources.Load ("");
-		armsSpritesByAngle[(int)ANGLE.UPLEFT] = (Sprite)Resources.Load ("");
-		armsSpritesByAngle[(int)ANGLE.UPRIGHT] = (Sprite)Resources.Load ("");
-		armsSpritesByAngle[(int)ANGLE.DOWNLEFT] = (Sprite)Resources.Load ("");
-		armsSpritesByAngle[(int)ANGLE.DOWNRIGHT] = (Sprite)Resources.Load ("");
-		// TODO THESE WILL PROBABLY BE HANDLED BY THE ANIMATION CONTROL *******************************
-		
 		inputState = new InputState();
 	}
 
@@ -88,26 +80,34 @@ public class Arms : BodyPart
 	{
 		ParseInput();
 	
+		// UPDATE ARMS POSITION
 		if(inputState.angleChanged)
 		{
-			armsTransform.localPosition = armsOffsetsByAngle[(int)inputState.inputAngle];
+			Debug.Log ("Arms.cs -- update arm angle");
+			armsColliderObject.transform.localPosition = armsOffsetsByAngle[(int)inputState.inputAngle];
 			inputState.angleChanged = false;
+			
+			// TODO TALK TO GRAPHICS CONTROL AND UPDATE ****************************************************
+			// TODO TALK TO GRAPHICS CONTROL AND UPDATE ****************************************************
 		}
 		
 		// BUTTON PRESSED
 		if(inputState.inputButton && inputState.buttonChanged)
 		{
-			GameObject pickup = GetFirstPickup();
+			GameObject pickup = armsCollider.GetFirstPickup();
 			if(pickup != null)
 			{
+				Debug.Log ("Arms.cs -- pick up object");
 				isHoldingObject = true;
 				heldObject = pickup;
-				heldObject.transform.parent = armsPrefab.transform;
+				heldObject.transform.parent = armsColliderObject.transform;
+				heldObject.transform.localPosition = new Vector3(0,0,0);
 			}
 			
-			GameObject attackable = GetFirstAttackable ();
+			GameObject attackable = armsCollider.GetFirstAttackable ();
 			if(attackable != null)
 			{
+				Debug.Log ("Arms.cs -- attack object");
 				// TODO INTERFACE *******************************************************
 				// resolve attack on object
 				// - Get script
@@ -120,34 +120,36 @@ public class Arms : BodyPart
 		}
 		
 		// BUTTON RELEASED
-		else if(!inputState.inputButton && inputState.buttonChanged)
+		else if(!inputState.inputButton && inputState.buttonChanged && isHoldingObject)
 		{
+			Debug.Log ("Arms.cs -- drop object");
 			isHoldingObject = false;
 			heldObject = null;
 			heldObject.transform.parent = null;
-			
-			GameObject attackable = GetFirstAttackable ();
-			if(attackable != null)
-			{
-				// TODO INTERFACE *******************************************************
-				// resolve attack on object
-				// - Get script
-				// - Call function
-				// - Try to remove the collision if it destroys itself, otherwise no big deal its handled
-				// TODO INTERFACE *******************************************************
-			}
 		
 			inputState.buttonChanged = false;
 		}
 	}
 	
 	void ParseInput()
-	{
-		// TODO INTERFACE *******************************************************
-		int x = 0;
-		int y = 0;
-		bool down = false;
-		// TODO INTERFACE *******************************************************
+	{	
+		int x;
+		int y;
+		bool down;
+	
+		if(lastInputState == null)
+		{
+			Debug.LogWarning ("Arms.cs -- no lastInputState initialized! Overriding with no movement!");
+			x = 0;
+			y = 0;
+			down = false;
+		}
+		else
+		{
+			x = (int)lastInputState.direction.x;
+			y = (int)lastInputState.direction.y;
+			down = lastInputState.actionPressed;
+		}
 		
 		if(x == 0)
 		{
@@ -201,56 +203,4 @@ public class Arms : BodyPart
 			inputState.inputButton = down;
 		}
 	}
-	
-	GameObject GetFirstPickup()
-	{
-		if(pickupCollisions.Count > 0)
-		{
-			while(pickupCollisions.Count > 0 && pickupCollisions[0] == null)
-			{
-				pickupCollisions.RemoveAt (0);
-			}
-			return pickupCollisions[0];
-		}
-		return null;
-	}
-	
-	GameObject GetFirstAttackable()
-	{
-		if(attackableCollisions.Count > 0)
-		{
-			while(attackableCollisions.Count > 0 && attackableCollisions[0] == null)
-			{
-				attackableCollisions.RemoveAt (0);
-			}
-			return attackableCollisions[0];
-		}
-		return null;
-	}
-	
-	// call from OnTriggerEnter() on pickup gameObject with collider/rigidbody
-	public void ReportAddPickupCollision(GameObject collision) 
-	{
-		pickupCollisions.Add (collision);
-	}
-	
-	// call from OnTriggerExit() on pickup gameObject with collider/rigidbody
-	public void ReportRemovePickupCollision(GameObject collision)
-	{
-		pickupCollisions.Remove (collision);
-	}
-	
-	// call from OnTriggerEnter() on pickup gameObject with collider/rigidbody
-	public void ReportAddAttackableCollision(GameObject collision)
-	{
-		attackableCollisions.Add (collision);
-	}
-	
-	// call from OnTriggerExit() on pickup gameObject with collider/rigidbody
-	public void ReportRemoveAttackableCollision(GameObject collision)
-	{
-		attackableCollisions.Remove (collision);
-	}
-	
-	
 }
