@@ -3,10 +3,15 @@ using System.Collections;
 
 public class CombinedPlayer : WorldObject 
 {
+	//properties
     public GameObject lazerPrefab;
+	private float respawnDelay = 0.5f;
 
+	// utility
 	BodyPart[] bodyParts;
 	Transform[] bodyPartTransforms;
+	bool dead;
+	Transform lastRespawnPoint;
 
     public BodyPart GetBodyPart(BodyPart.BodyPartType partType)
     {
@@ -26,6 +31,17 @@ public class CombinedPlayer : WorldObject
 	{
 		base.Start();
 
+		// initialize respawn
+		float closestDistance = float.MaxValue;
+		foreach (GameObject respawn in GameObject.FindGameObjectsWithTag("Respawn"))
+		{
+			float distance = Vector3.Distance(respawn.transform.position, transform.position);
+			if (distance < closestDistance)
+			{
+				lastRespawnPoint = respawn.transform;
+			}
+		}
+
 		// initialize sprites
 		Transform graphicsTransform = transform.Find("Graphics");
 		bodyPartTransforms = new Transform[(int)BodyPart.BodyPartType.MAX];
@@ -44,9 +60,11 @@ public class CombinedPlayer : WorldObject
 
 	public override void Update()
 	{
-		base.Update();
-		UpdateBodyParts();
-		UpdateSprites();
+		if (!dead)
+		{
+			base.Update();
+			UpdateBodyParts();
+		}
 	}
 
 	void UpdateBodyParts () 
@@ -57,23 +75,36 @@ public class CombinedPlayer : WorldObject
 		}	
 	}
 
-	void UpdateSprites()
-	{
-	}
-
 	void OnTriggerEnter(Collider other)
 	{
 		DeadlyObject deadlyObject = other.GetComponent<DeadlyObject>();
 		if (deadlyObject != null)
 		{
-			Debug.Log("Collision");
+			deadlyObject.OnCollideWithTarget(gameObject);
 		}
 	}
 
 	protected override void Die()
 	{
-		base.Die();
-		Debug.Log("I'M DEAD!");
+		dead = true;
+		SetVisible(false);
+		transform.position = lastRespawnPoint.position;
+		StartCoroutine(Utility.Delay(respawnDelay, Respawn));
+	}
+
+	void Respawn()
+	{
+		dead = false;
+		SetVisible(true);
+	}
+
+	void SetVisible(bool visible)
+	{
+		Renderer[] renderers = GetComponentsInChildren<Renderer>();
+		foreach (Renderer renderer in renderers)
+		{
+			renderer.enabled = visible;
+		}
 	}
 
     public void FireTheLazer(Lazer.PowerLevel powerLevel, IGJInputManager.InputDirection direction)
