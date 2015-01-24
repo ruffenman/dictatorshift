@@ -16,10 +16,11 @@ public class CombinedPlayer : WorldObject
     public void ReceiveInput(IGJInputManager.InputState[] inputStates)
     {
         // TODO: Mess with player -> body assignments
-        for (int i = 0; i < inputStates.Length; ++i)
-        {
-            bodyParts[i].ReceiveInput(inputStates[i]);
-        }
+        //for (int i = 0; i < inputStates.Length; ++i)
+        //{
+        //    bodyParts[i].ReceiveInput(inputStates[i]);
+        //}
+        bodyParts[(int)BodyPart.BodyPartType.ARMS].ReceiveInput(inputStates[0]);
     }
 
 	new void Start ()
@@ -61,9 +62,19 @@ public class CombinedPlayer : WorldObject
 	{
 	}
 
+	void OnTriggerEnter(Collider other)
+	{
+		DeadlyObject deadlyObject = other.GetComponent<DeadlyObject>();
+		if (deadlyObject != null)
+		{
+			Debug.Log("Collision");
+		}
+	}
+
 	protected override void Die()
 	{
 		base.Die();
+		Debug.Log("I'M DEAD!");
 	}
 
     public void FireTheLazer(Lazer.PowerLevel powerLevel, IGJInputManager.InputDirection direction)

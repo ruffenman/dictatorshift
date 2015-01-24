@@ -38,6 +38,7 @@ public class BodyPart
         lastInputState.directionVec.x = inputState.directionVec.x;
         lastInputState.directionVec.y = inputState.directionVec.y;
         lastInputState.directionVec.z = 0;
+        lastInputState.direction = inputState.direction;
         lastInputState.actionPressed = inputState.actionPressed;
         lastInputState.actionJustPressed = inputState.actionJustPressed;
 
