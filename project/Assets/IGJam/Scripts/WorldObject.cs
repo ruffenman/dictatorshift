@@ -4,8 +4,6 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class WorldObject : MonoBehaviour 
 {
-	static readonly float gravity = 2f;
-
 	public enum ObjectType
 	{
 		INTERACTIVE,
@@ -15,7 +13,8 @@ public class WorldObject : MonoBehaviour
 	// properties
 	public ObjectType objectType;
 	public float moveDepreciation = 0.9f;
-	public float stopVelocity = 1.0f;
+    public float stopVelocity = 1.0f;
+    public float gravity = 2f;
 
 	// utility
 	private float health = 100;
