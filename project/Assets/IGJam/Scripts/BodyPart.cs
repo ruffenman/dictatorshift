@@ -13,11 +13,12 @@ public class BodyPart
 		MAX
 	}
 
-	BodyPartType bodyPartType;
-	int playerIndex;
-	Transform spriteTransform;
-	CombinedPlayer combinedPlayer;
-
+	protected BodyPartType bodyPartType;
+	protected int playerIndex;
+	protected Transform spriteTransform;
+	protected CombinedPlayer combinedPlayer;
+	protected IGJInputManager.InputState lastInputState;
+	
 	public BodyPart(BodyPartType newBodyPartType, int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 	{
 		bodyPartType = newBodyPartType;
@@ -42,8 +43,7 @@ public class BodyPart
         OnInputReceived();
     }
 
-    protected void OnInputReceived()
-    { }
-
-    protected IGJInputManager.InputState lastInputState;
+    protected virtual void OnInputReceived()
+    {
+	}
 }
