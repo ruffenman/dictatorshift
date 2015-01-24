@@ -17,8 +17,10 @@ public class Arms : BodyPart
 		COUNT
 	}
 	
-	public static float FULL = 1;
-	public static float FRAC = 0.6f;
+	static float FULL = 1;
+	static float FRAC = 0.6f;
+	static float THROW_MULTIPLIER = 5f;
+	static float FLAIL_MULTIPLIER = 2f;
 	
 	public class InputState
 	{
@@ -139,7 +141,7 @@ public class Arms : BodyPart
 				WorldObject obj = interactible.GetComponent<WorldObject>();
 				if(obj != null)
 				{
-					obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle]);
+					obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * FLAIL_MULTIPLIER);
 				}
 				else
 				{
@@ -151,7 +153,7 @@ public class Arms : BodyPart
 		// BUTTON RELEASED
 		else if(!inputState.inputButton && inputState.buttonChanged)
 		{
-			// THROW OBJECT
+			// RELEASE/THROW OBJECT
 			if(isHoldingObject)
 			{
 				Debug.Log ("Arms.cs -- throw object");
@@ -160,7 +162,7 @@ public class Arms : BodyPart
 				WorldObject obj = heldObject.GetComponent<WorldObject>();
 				if(obj != null)
 				{
-					obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle]);
+					obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * THROW_MULTIPLIER);
 				}
 				else
 				{
@@ -171,6 +173,7 @@ public class Arms : BodyPart
 				isHoldingObject = false;
 			}
 			
+			// STOP FLAILING
 			if(isFlailing)
 			{
 				isFlailing = false;
@@ -184,69 +187,41 @@ public class Arms : BodyPart
 	
 	void ParseInput()
 	{	
-		int x;
-		int y;
 		bool down;
-	
+		IGJInputManager.InputDirection direction = lastInputState.direction;
 		if(lastInputState == null)
 		{
 			Debug.LogWarning ("Arms.cs -- no lastInputState initialized! Overriding with no movement!");
-			x = 0;
-			y = 0;
-			down = false;
+			return;
 		}
-		else
-		{
-			x = (int)lastInputState.direction.x;
-			y = (int)lastInputState.direction.y;
-			down = lastInputState.actionPressed;
-		}
+
+		down = lastInputState.actionPressed;
 		
-		if(x == 0)
+		// HACK TESTING OVERRIDE *****************************************************************
+		if(Input.GetKey (KeyCode.W)) { inputState.inputAngle = ANGLE.UP; }
+		else if(Input.GetKey (KeyCode.X)) { inputState.inputAngle = ANGLE.DOWN; }
+		else if(Input.GetKey (KeyCode.A)) { inputState.inputAngle = ANGLE.LEFT; }
+		else if(Input.GetKey (KeyCode.D)) { inputState.inputAngle = ANGLE.RIGHT; }
+		else if(Input.GetKey (KeyCode.Q)) { inputState.inputAngle = ANGLE.UPLEFT; }
+		else if(Input.GetKey (KeyCode.E)) { inputState.inputAngle = ANGLE.UPRIGHT; }
+		else if(Input.GetKey (KeyCode.Z)) { inputState.inputAngle = ANGLE.DOWNLEFT; }
+		else if(Input.GetKey (KeyCode.C)) { inputState.inputAngle = ANGLE.DOWNRIGHT; }
+		// HACK TESTING OVERRIDE *****************************************************************
+		
+		/*
+		switch(direction)
 		{
-			if(y == 0)
-			{
-				inputState.inputAngle = ANGLE.NONE;
-			}
-			else if(y == 1)
-			{
-				inputState.inputAngle = ANGLE.UP;
-			}
-			else if(y == -1)
-			{
-				inputState.inputAngle = ANGLE.DOWN;
-			}
+			case(IGJInputManager.InputDirection.Up): inputState.inputAngle = ANGLE.UP; break;
+			case(IGJInputManager.InputDirection.Down): inputState.inputAngle = ANGLE.DOWN; break;
+			case(IGJInputManager.InputDirection.Left): inputState.inputAngle = ANGLE.LEFT; break;
+			case(IGJInputManager.InputDirection.Right): inputState.inputAngle = ANGLE.RIGHT; break;
+			case(IGJInputManager.InputDirection.UpLeft): inputState.inputAngle = ANGLE.UPLEFT; break;
+			case(IGJInputManager.InputDirection.UpRight): inputState.inputAngle = ANGLE.UPRIGHT; break;
+			case(IGJInputManager.InputDirection.DownLeft): inputState.inputAngle = ANGLE.DOWNLEFT; break;
+			case(IGJInputManager.InputDirection.DownRight): inputState.inputAngle = ANGLE.DOWNRIGHT; break;
+			default: inputState.inputAngle = ANGLE.NONE; break;
 		}
-		else if(x == 1)
-		{
-			if(y == 0)
-			{
-				inputState.inputAngle = ANGLE.RIGHT;
-			}
-			else if(y == 1)
-			{
-				inputState.inputAngle = ANGLE.UPRIGHT;
-			}
-			else if(y == -1)
-			{
-				inputState.inputAngle = ANGLE.DOWNRIGHT;
-			}
-		}
-		else if(x == -1)
-		{
-			if(y == 0)
-			{
-				inputState.inputAngle = ANGLE.LEFT;
-			}
-			else if(y == 1)
-			{
-				inputState.inputAngle = ANGLE.UPLEFT;
-			}
-			else if(y == -1)
-			{
-				inputState.inputAngle = ANGLE.DOWNLEFT;
-			}
-		}
+		*/
 		
 		if(down != inputState.inputButton)
 		{
