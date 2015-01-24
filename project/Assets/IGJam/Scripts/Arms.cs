@@ -17,6 +17,9 @@ public class Arms : BodyPart
 		COUNT
 	}
 	
+	public static float FULL = 1;
+	public static float FRAC = 0.6f;
+	
 	public class InputState
 	{
 		public bool inputButton = false;
@@ -26,6 +29,7 @@ public class Arms : BodyPart
 		public bool angleChanged = false;
 	}
 	
+	public bool isFlailing = false;
 	public bool isHoldingObject = false;
 	public GameObject heldObject = null;
 	
@@ -41,36 +45,38 @@ public class Arms : BodyPart
 		: base(BodyPart.BodyPartType.ARMS, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
 	{
 		armsColliderObject = new GameObject();
-		armsColliderObject.AddComponent<BoxCollider>().size = new Vector3(1,1,1);
-		armsColliderObject.AddComponent<Rigidbody>();
-		armsColliderObject.AddComponent<ArmsCollider>();
+		armsColliderObject.name = "Arms Collider -- owned by Arms.cs";
 		armsCollider = armsColliderObject.GetComponent<ArmsCollider>();
-		
-		// TODO FETCH THE CHARACTER ROOT ********************
-		armsColliderObject.transform.parent = null;
-		// TODO FETCH THE CHARACTER ROOT ********************
-		
+		BoxCollider bc = armsColliderObject.AddComponent<BoxCollider>();
+		bc.size = new Vector3(1,1,1);
+		bc.isTrigger = true;
+		Rigidbody rb = armsColliderObject.AddComponent<Rigidbody>();
+		rb.useGravity = false;
+		rb.constraints = RigidbodyConstraints.FreezePositionZ;
+		rb.constraints = RigidbodyConstraints.FreezeRotation;
+		armsColliderObject.AddComponent<ArmsCollider>();
+		armsColliderObject.transform.parent = newCombinedPlayer.transform;
 		armsColliderObject.transform.localPosition = new Vector3(0,0,0);
 		
 		armsOffsetsByAngle[(int)ANGLE.NONE] = new Vector2(0,0);
-		armsOffsetsByAngle[(int)ANGLE.UP] = new Vector2(0,0);
-		armsOffsetsByAngle[(int)ANGLE.DOWN] = new Vector2(0,0);
-		armsOffsetsByAngle[(int)ANGLE.LEFT] = new Vector2(0,0);
-		armsOffsetsByAngle[(int)ANGLE.RIGHT] = new Vector2(0,0);
-		armsOffsetsByAngle[(int)ANGLE.UPLEFT] = new Vector2(0,0);
-		armsOffsetsByAngle[(int)ANGLE.UPRIGHT] = new Vector2(0,0);
-		armsOffsetsByAngle[(int)ANGLE.DOWNLEFT] = new Vector2(0,0);
-		armsOffsetsByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(0,0);
+		armsOffsetsByAngle[(int)ANGLE.UP] = new Vector2(0,FULL);
+		armsOffsetsByAngle[(int)ANGLE.DOWN] = new Vector2(0,-FULL);
+		armsOffsetsByAngle[(int)ANGLE.LEFT] = new Vector2(-FULL,0);
+		armsOffsetsByAngle[(int)ANGLE.RIGHT] = new Vector2(0,FULL);
+		armsOffsetsByAngle[(int)ANGLE.UPLEFT] = new Vector2(-FRAC,FRAC);
+		armsOffsetsByAngle[(int)ANGLE.UPRIGHT] = new Vector2(FRAC,FRAC);
+		armsOffsetsByAngle[(int)ANGLE.DOWNLEFT] = new Vector2(-FRAC,-FRAC);
+		armsOffsetsByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(-FRAC,FRAC);
 		
 		armsVelocitiesByAngle[(int)ANGLE.NONE] = new Vector2(0,0);
-		armsVelocitiesByAngle[(int)ANGLE.UP] = new Vector2(0,0);
-		armsVelocitiesByAngle[(int)ANGLE.DOWN] = new Vector2(0,0);
-		armsVelocitiesByAngle[(int)ANGLE.LEFT] = new Vector2(0,0);
-		armsVelocitiesByAngle[(int)ANGLE.RIGHT] = new Vector2(0,0);
-		armsVelocitiesByAngle[(int)ANGLE.UPLEFT] = new Vector2(0,0);
-		armsVelocitiesByAngle[(int)ANGLE.UPRIGHT] = new Vector2(0,0);
-		armsVelocitiesByAngle[(int)ANGLE.DOWNLEFT] = new Vector2(0,0);
-		armsVelocitiesByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(0,0);
+		armsVelocitiesByAngle[(int)ANGLE.UP] = new Vector2(0,FULL);
+		armsVelocitiesByAngle[(int)ANGLE.DOWN] = new Vector2(0,-FULL);
+		armsVelocitiesByAngle[(int)ANGLE.LEFT] = new Vector2(-FULL,0);
+		armsVelocitiesByAngle[(int)ANGLE.RIGHT] = new Vector2(0,FULL);
+		armsVelocitiesByAngle[(int)ANGLE.UPLEFT] = new Vector2(-FRAC,FRAC);
+		armsVelocitiesByAngle[(int)ANGLE.UPRIGHT] = new Vector2(FRAC,FRAC);
+		armsVelocitiesByAngle[(int)ANGLE.DOWNLEFT] = new Vector2(-FRAC,-FRAC);
+		armsVelocitiesByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(-FRAC,FRAC);
 		
 		inputState = new InputState();
 	}
@@ -91,42 +97,87 @@ public class Arms : BodyPart
 			// TODO TALK TO GRAPHICS CONTROL AND UPDATE ****************************************************
 		}
 		
+		// VALIDATE HELD OBJECT
+		if(isHoldingObject && heldObject == null)
+		{
+			isHoldingObject = false;
+			Debug.Log("Arms.cs -- held object was destroyed!");
+		}
+		
 		// BUTTON PRESSED
 		if(inputState.inputButton && inputState.buttonChanged)
 		{
-			GameObject pickup = armsCollider.GetFirstPickup();
-			if(pickup != null)
+			// PICK UP OBJECT
+			GameObject interactible = armsCollider.GetFirstInteractible();
+			if(interactible != null)
 			{
 				Debug.Log ("Arms.cs -- pick up object");
 				isHoldingObject = true;
-				heldObject = pickup;
+				heldObject = interactible;
 				heldObject.transform.parent = armsColliderObject.transform;
 				heldObject.transform.localPosition = new Vector3(0,0,0);
 			}
-			
-			GameObject attackable = armsCollider.GetFirstAttackable ();
-			if(attackable != null)
+			// START FLAILING
+			else
 			{
-				Debug.Log ("Arms.cs -- attack object");
-				// TODO INTERFACE *******************************************************
-				// resolve attack on object
-				// - Get script
-				// - Call function
-				// - Try to remove the collision if it destroys itself, otherwise no big deal its handled
-				// TODO INTERFACE *******************************************************
+				isFlailing = true;
+				// TODO TALK TO GRAPHICS CONTROL AND UPDATE ****************************************************
+				// TODO TALK TO GRAPHICS CONTROL AND UPDATE ****************************************************
 			}
 			
 			inputState.buttonChanged = false;
 		}
 		
-		// BUTTON RELEASED
-		else if(!inputState.inputButton && inputState.buttonChanged && isHoldingObject)
+		// BUTTON STILL HELD DOWN
+		else if(inputState.inputButton && inputState.buttonChanged == false)
 		{
-			Debug.Log ("Arms.cs -- drop object");
-			isHoldingObject = false;
-			heldObject = null;
-			heldObject.transform.parent = null;
+			// FLAIL AT OBJECT
+			GameObject interactible = armsCollider.GetFirstInteractible();
+			if(interactible != null)
+			{
+				Debug.Log ("Arms.cs -- flail at object");
+				WorldObject obj = interactible.GetComponent<WorldObject>();
+				if(obj != null)
+				{
+					obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle]);
+				}
+				else
+				{
+					Debug.LogWarning ("Arms.cs -- no WorldObject script on held object!");
+				}
+			}
+		}
 		
+		// BUTTON RELEASED
+		else if(!inputState.inputButton && inputState.buttonChanged)
+		{
+			// THROW OBJECT
+			if(isHoldingObject)
+			{
+				Debug.Log ("Arms.cs -- throw object");
+				heldObject.transform.parent = null;
+				
+				WorldObject obj = heldObject.GetComponent<WorldObject>();
+				if(obj != null)
+				{
+					obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle]);
+				}
+				else
+				{
+					Debug.LogWarning ("Arms.cs -- no WorldObject script on held object!");
+				}
+				
+				heldObject = null;
+				isHoldingObject = false;
+			}
+			
+			if(isFlailing)
+			{
+				isFlailing = false;
+				// TODO TALK TO GRAPHICS CONTROL AND UPDATE ****************************************************
+				// TODO TALK TO GRAPHICS CONTROL AND UPDATE ****************************************************
+			}
+			
 			inputState.buttonChanged = false;
 		}
 	}
