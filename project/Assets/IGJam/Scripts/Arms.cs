@@ -146,8 +146,8 @@ public class Arms : BodyPart
 		}
 		else
 		{
-			x = (int)lastInputState.direction.x;
-			y = (int)lastInputState.direction.y;
+			x = (int)lastInputState.directionVec.x;
+			y = (int)lastInputState.directionVec.y;
 			down = lastInputState.actionPressed;
 		}
 		

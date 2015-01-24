@@ -62,9 +62,9 @@ public class Body : BodyPart
 		if (canThrust)
 		{
 			// and received button press and direction
-			if (lastInputState.actionJustPressed && (lastInputState.direction != Vector3.zero))
+			if (lastInputState.actionJustPressed && (lastInputState.direction != IGJInputManager.InputDirection.None))
 			{
-				bodyVelocity += lastInputState.direction * thrustSpeed;
+				bodyVelocity += lastInputState.directionVec * thrustSpeed;
 				EnterCooldown();
 			}
 		}
