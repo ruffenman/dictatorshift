@@ -17,5 +17,7 @@ public class FallingBlock : WorldObject
 	void Fall()
 	{
 		objectType = ObjectType.INTERACTIVE;
+		Die();
+		renderer.enabled = false;
 	}
 }

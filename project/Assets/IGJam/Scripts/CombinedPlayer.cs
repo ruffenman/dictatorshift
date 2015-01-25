@@ -6,9 +6,9 @@ public class CombinedPlayer : WorldObject
 {
 	//properties
     public GameObject lazerPrefab;
-	private float respawnDelay = 0.5f;
-	private float respawnMoveTime = 0.15f;
-    public GameObject deathParticles;
+	private float respawnDelay = 0.45f;
+	private float respawnMoveTime = 0.25f;
+	private float particleTime = 0.75f;
 
 	// utility
 	BodyPart[] bodyParts;
@@ -140,7 +140,16 @@ public class CombinedPlayer : WorldObject
 			deathParticles.particleSystem.Play();
 		}
 		dead = true;
+		StartCoroutine(Utility.Delay(particleTime, AfterDeathParticles));
+	}
+
+	void AfterDeathParticles()
+	{
 		SetVisible(false);
+		if (deathParticles != null)
+		{
+			deathParticles.particleSystem.Clear();
+		}
 		StartCoroutine(Utility.Delay(respawnDelay, Respawn));
 	}
 
