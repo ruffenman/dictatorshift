@@ -19,8 +19,8 @@ public class Arms : BodyPart
 	
 	static float FULL = 1;
 	static float FRAC = 0.6f;
-	static float THROW_MULTIPLIER = 50f;
-	static float FLAIL_MULTIPLIER = 5f;
+	static float THROW_MULTIPLIER = 75f;
+	static float FLAIL_MULTIPLIER = 75f;
 	
 	public class InputState
 	{
@@ -122,10 +122,17 @@ public class Arms : BodyPart
 				GameObject interactible = armsCollider.GetFirstInteractible();
 				Debug.Log ("Arms.cs -- pick up object");
 				isHoldingObject = true;
-				interactible.GetComponent<WorldObject>().SetPhysicsEnabled(false);
+				WorldObject obj = interactible.GetComponent<WorldObject>();
+				obj.SetPhysicsEnabled(false);
 				heldObject = interactible;
 				heldObject.transform.parent = armsColliderObject.transform;
 				heldObject.transform.localPosition = new Vector3(0,0,0);
+
+				DeadlyObject deadlyObj = obj as DeadlyObject;
+				if (deadlyObj != null)
+				{
+					deadlyObj.Defang();
+				}
 			}
 			// START FLAILING
 			else
@@ -151,7 +158,12 @@ public class Arms : BodyPart
 					WorldObject obj = interactible.GetComponent<WorldObject>();
 					if(obj != null)
 					{
-						obj.SetVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * FLAIL_MULTIPLIER);
+						obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * FLAIL_MULTIPLIER);
+						DeadlyObject deadlyObj = obj as DeadlyObject;
+						if (deadlyObj != null)
+						{
+							deadlyObj.Defang();
+						}
 					}
 					else
 					{
@@ -178,7 +190,7 @@ public class Arms : BodyPart
 				obj.SetPhysicsEnabled(true);
 				if(obj != null)
 				{
-					obj.SetVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * THROW_MULTIPLIER);
+					obj.AddVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * THROW_MULTIPLIER);
 				}
 				else
 				{

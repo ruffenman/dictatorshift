@@ -5,12 +5,12 @@ public class Drone : DeadlyObject
 {
 	// properties
 	public float explosionTime = 0.43f;
-	public float flySpeed = 2;
+	public float flySpeed = 2f;
 	public float shouldFollowDistance = 10f;
 	public GameObject target;
 	public float hoverDistance = 1.5f;
 	public LayerMask dontCollideLayermask;
-	float frontOfDroneOffset = 1.0f;
+	public float frontOfDroneOffset = 1.0f;
 
 	// utility
 	private Animator animator;
@@ -54,11 +54,13 @@ public class Drone : DeadlyObject
 				{
 					if (!hit.collider.gameObject.CompareTag("Player"))
 					{
-						newVelocity.y = 0;
+						Vector3 current = GetVelocity();
+						current.y = 0;
+						SetVelocity(current);
 					}
 				}
 
-				SetVelocity(newVelocity);
+				AddVelocity(newVelocity);
 				animator.Play("Fly");
 
 				if (newVelocity.x != 0)
@@ -73,7 +75,7 @@ public class Drone : DeadlyObject
 	public override void OnCollideWithTarget(GameObject target)
 	{
 		WorldObject worldObject = target.GetComponent<WorldObject>();
-		if (worldObject != null)
+		if ((worldObject != null) && !defanged)
 		{
 			worldObject.TakeDamage(damage);
 			if (destroyOnCollision)
