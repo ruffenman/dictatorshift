@@ -99,6 +99,7 @@ public class WorldObject : MonoBehaviour
 
 	protected virtual void Die()
 	{
+		SoundManager.instance.PlaySfx (SoundManager.SFX_BREAK);
 		Destroy(gameObject);
 	}
 

@@ -9,6 +9,7 @@ public class ChangeSceneAfter : MonoBehaviour
 	void Start()
 	{
 		GameObject.Instantiate (playMusicPrefab);
+		SoundManager.instance.PlaySfx (SoundManager.SFX_EXPLOSION);
 	}
 	
 	void Update()
