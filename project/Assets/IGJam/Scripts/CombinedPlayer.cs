@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CombinedPlayer : WorldObject 
 {
@@ -14,6 +15,7 @@ public class CombinedPlayer : WorldObject
 	Transform[] bodyPartTransforms;
 	bool dead;
 	Transform lastRespawnPoint;
+    int[] playerToBodyMapping;
 
     // this is a debub value to be taken out later
     private int debugGetInput;
@@ -48,11 +50,26 @@ public class CombinedPlayer : WorldObject
         }
         else
         {
-            // TODO: Mess with player -> body assignments
+            if (Input.GetKeyDown(KeyCode.RightShift))
+            {
+                ShuffleInputs();
+            }
+
             for (int i = 0; i < inputStates.Length; ++i)
             {
-                bodyParts[i].ReceiveInput(inputStates[i]);
+                bodyParts[playerToBodyMapping[i]].ReceiveInput(inputStates[i]);
             }
+        }
+    }
+
+    public void ShuffleInputs()
+    {
+        List<int> partIndexesToAssign = new List<int>(new int[]{0, 1, 2, 3});
+        for (int i = 0; i < playerToBodyMapping.Length; ++i)
+        {
+            int indexToAssign = Random.Range(0, partIndexesToAssign.Count);
+            playerToBodyMapping[i] = partIndexesToAssign[indexToAssign];
+            partIndexesToAssign.RemoveAt(indexToAssign);
         }
     }
 
@@ -85,6 +102,8 @@ public class CombinedPlayer : WorldObject
         bodyParts[(int)BodyPart.BodyPartType.BODY] = new Body(1, bodyPartTransforms[(int)BodyPart.BodyPartType.BODY], this);
         bodyParts[(int)BodyPart.BodyPartType.ARMS] = new Arms(2, bodyPartTransforms[(int)BodyPart.BodyPartType.ARMS], this);
         bodyParts[(int)BodyPart.BodyPartType.LEGS] = new Legs(3, bodyPartTransforms[(int)BodyPart.BodyPartType.LEGS], this);
+
+        playerToBodyMapping = new int[(int)BodyPart.BodyPartType.MAX] {0,1,2,3};
 	}
 
 	protected override void UpdateInternal()
