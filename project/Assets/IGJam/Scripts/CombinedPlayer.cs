@@ -110,12 +110,8 @@ public class CombinedPlayer : WorldObject
 
     public void FireTheLazer(Lazer.PowerLevel powerLevel, IGJInputManager.InputDirection direction)
     {
-        const float xOffset = 0.65f;
-        const float yOffset = 0.3f;
         GameObject Clone;
         Vector3 pos = bodyPartTransforms[(int)BodyPart.BodyPartType.HEAD].position;
-        pos.x += xOffset;
-        pos.y += yOffset;
         Clone = (Instantiate(lazerPrefab, pos, transform.rotation)) as GameObject;
         Lazer lazer = (Lazer)Clone.GetComponent(typeof(Lazer));
         lazer.SetLazerStrength(powerLevel, direction);
