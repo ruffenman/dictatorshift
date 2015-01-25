@@ -18,7 +18,14 @@ public class ObjectShooter : ToggleObject
 	public void Shoot()
 	{
 		GameObject go = (GameObject)Instantiate (spawnObject, this.gameObject.transform.position, this.gameObject.transform.rotation);
-		go.GetComponent<WorldObject>().SetVelocity (spawnVelocity);
+		if(go.GetComponent<WorldObject>())
+		{
+			go.GetComponent<WorldObject>().SetVelocity (spawnVelocity);
+		}
+		else if(go.GetComponent<WorldObjectNonCharacter>())
+		{
+			go.GetComponent<WorldObjectNonCharacter>().SetVelocity (spawnVelocity);
+		}
 	}
 	
 	protected override void Activate ()

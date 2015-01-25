@@ -24,7 +24,7 @@ public class ToggleObject : WorldObject
 	void OnTriggerEnter(Collider other)
 	{
 		if(type == TYPE.TRIGGER)
-		{;
+		{
 			HandleTest (true, other);
 		}
 	}
@@ -46,8 +46,6 @@ public class ToggleObject : WorldObject
 			{
 				if(other.name == test_string)
 				{
-					Debug.Log ("Hitler");
-					Debug.Log ("BOOL:" + enter);
 					Toggle (enter);
 				}
 				break;
