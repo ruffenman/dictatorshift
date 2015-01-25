@@ -40,7 +40,7 @@ public class Lazer : MonoBehaviour
 
         mPivot.localRotation = Quaternion.AngleAxis(mAngle, Vector3.forward);
 
-        mOffset = new Vector3(0.325f, 0.15f, 0.0f);
+        mOffset = new Vector3(0.275f, 0.2f, 0.0f);
 
         //update the location
         transform.position = mPlayerHead.position + mOffset;
@@ -53,7 +53,7 @@ public class Lazer : MonoBehaviour
         transform.position = mPlayerHead.position + mOffset;
 
         //  scale the lazer
-        const float SCALE = 1.0f;
+        const float SCALE = 100.0f;
         float sizeIncrease = Time.deltaTime;
 
         mMiddleSection.localPosition += new Vector3(sizeIncrease * SCALE, 0.0f, 0.0f);
