@@ -72,6 +72,7 @@ public class CombinedPlayer : WorldObject
             playerToBodyMapping[i] = partIndexesToAssign[indexToAssign];
             partIndexesToAssign.RemoveAt(indexToAssign);
         }
+        Debug.Log("Inputs shuffled!");
     }
 
 	new void Start ()
