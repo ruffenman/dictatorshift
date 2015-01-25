@@ -10,6 +10,7 @@ public class IGJInputManager : MonoBehaviour
         public InputDirection direction;
         public bool actionPressed;
         public bool actionJustPressed;
+        public bool actionJustReleased;
     }
 
     public enum InputDirection
@@ -23,6 +24,7 @@ public class IGJInputManager : MonoBehaviour
         DownLeft,
         Left,
         UpLeft,
+        Max,
     }
 
 	public float upRegionBeginAngle = 67.5f;
@@ -35,10 +37,10 @@ public class IGJInputManager : MonoBehaviour
     {
         inputStates = new InputState[4] 
         { 
-            new InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false},
-            new InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false},
-            new InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false},
-            new InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false},
+            new InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false, actionJustReleased = false},
+            new InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false, actionJustReleased = false},
+            new InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false, actionJustReleased = false},
+            new InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false, actionJustReleased = false},
         };
 	}
 	
@@ -53,6 +55,7 @@ public class IGJInputManager : MonoBehaviour
             InputDirection direction = InputDirection.None;
             bool actionPressed = Input.GetButton(actionButtonName);
             bool actionJustPressed = Input.GetButtonDown(actionButtonName);
+            bool actionJustReleased = Input.GetButtonUp(actionButtonName);
 
             Vector3 dirVec = Vector3.zero;
             if (x > Mathf.Cos(upRegionBeginAngle * DEGREES_TO_RADIANS))
@@ -121,11 +124,17 @@ public class IGJInputManager : MonoBehaviour
             inputState.direction = direction;
             inputState.actionPressed = actionPressed;
             inputState.actionJustPressed = actionJustPressed;
+            inputState.actionJustReleased = actionJustReleased;
 
-            if (inputVec.sqrMagnitude > 0 || dirVec.sqrMagnitude > 0 || actionPressed || actionJustPressed)
+            if (inputVec.sqrMagnitude > 0 || dirVec.sqrMagnitude > 0 || actionPressed || actionJustPressed || actionJustReleased)
             {
                 int playerIndex = Array.IndexOf(inputStates, inputState) + 1;
-                Debug.Log("\tp" + playerIndex + "_input_vec: " + inputVec + "\tp" + playerIndex + "_dir: " + dirVec + "\tp" + playerIndex + "_direction: " + direction + "\tp" + playerIndex + "_actionPressed: " + actionPressed + "\tp" + playerIndex + "_actionJustPressed: " + actionJustPressed);
+                Debug.Log("\tp" + playerIndex + "_input_vec: " + inputVec + 
+                    "\tp" + playerIndex + "_dir: " + dirVec + 
+                    "\tp" + playerIndex + "_direction: " + direction + 
+                    "\tp" + playerIndex + "_actionPressed: " + actionPressed + 
+                    "\tp" + playerIndex + "_actionJustPressed: " + actionJustPressed + 
+                    "\tp" + playerIndex + "_actionJustReleased: " + actionJustReleased);
             }
         };
 
