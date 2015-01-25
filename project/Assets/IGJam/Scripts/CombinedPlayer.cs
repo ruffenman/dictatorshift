@@ -7,12 +7,16 @@ public class CombinedPlayer : WorldObject
     public GameObject lazerPrefab;
 	private float respawnDelay = 0.5f;
 	private float respawnMoveTime = 0.15f;
+    public GameObject deathParticles;
 
 	// utility
 	BodyPart[] bodyParts;
 	Transform[] bodyPartTransforms;
 	bool dead;
 	Transform lastRespawnPoint;
+
+    // this is a debub value to be taken out later
+    private int debugGetInput;
 
     public BodyPart GetBodyPart(BodyPart.BodyPartType partType)
     {
@@ -27,11 +31,26 @@ public class CombinedPlayer : WorldObject
     public void ReceiveInput(IGJInputManager.InputState[] inputStates)
     {
         // TODO: Mess with player -> body assignments
-        //for (int i = 0; i < inputStates.Length; ++i)
-        //{
-        //    bodyParts[i].ReceiveInput(inputStates[i]);
-        //}
-        bodyParts[(int)BodyPart.BodyPartType.LEGS].ReceiveInput(inputStates[0]);
+        for (int i = 0; i < inputStates.Length; ++i)
+        {
+            bodyParts[i].ReceiveInput(inputStates[i]);
+        }
+/*
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            //increment the current body part to get input
+            debugGetInput++;
+            debugGetInput %= (int)BodyPart.BodyPartType.MAX;
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            // decrement the current body part to get input
+            debugGetInput--;
+            debugGetInput %= (int)BodyPart.BodyPartType.MAX;
+        }
+
+        bodyParts[debugGetInput].ReceiveInput(inputStates[0]);
+*/
     }
 
 	new void Start ()
@@ -93,6 +112,7 @@ public class CombinedPlayer : WorldObject
 
 	protected override void Die()
 	{
+		deathParticles.particleSystem.Play ();
 		dead = true;
 		SetVisible(false);
 		StartCoroutine(Utility.Delay(respawnDelay, Respawn));
@@ -121,12 +141,8 @@ public class CombinedPlayer : WorldObject
 
     public void FireTheLazer(Lazer.PowerLevel powerLevel, IGJInputManager.InputDirection direction)
     {
-        const float xOffset = 0.65f;
-        const float yOffset = 0.3f;
         GameObject Clone;
         Vector3 pos = bodyPartTransforms[(int)BodyPart.BodyPartType.HEAD].position;
-        pos.x += xOffset;
-        pos.y += yOffset;
         Clone = (Instantiate(lazerPrefab, pos, transform.rotation)) as GameObject;
         Lazer lazer = (Lazer)Clone.GetComponent(typeof(Lazer));
         lazer.SetLazerStrength(powerLevel, direction);

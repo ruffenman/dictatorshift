@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class WorldObject : MonoBehaviour 
 {
-	static readonly float gravity = 5f;
+	public float gravity = 5f;
 
 	public enum ObjectType
 	{

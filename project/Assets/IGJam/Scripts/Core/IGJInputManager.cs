@@ -25,10 +25,10 @@ public class IGJInputManager : MonoBehaviour
         UpLeft,
     }
 
-	public float upBoundsAngle = (3f / 8f);
-	public float rightBoundsAngle = (5f / 8f);
-	public float leftBoundsAngle = (1f / 8f);
-	public float downBoundsAngle = (15f / 8f);
+	public float upRegionBeginAngle = 67.5f;
+    public float upRegionEndAngle = 112.5f;
+    public float leftRegionBeginAngle = 157.5f;
+    public float leftRegionEndAngle = 202.5f;
     
 	// Use this for initialization
 	private void Start () 
@@ -55,19 +55,19 @@ public class IGJInputManager : MonoBehaviour
             bool actionJustPressed = Input.GetButtonDown(actionButtonName);
 
             Vector3 dirVec = Vector3.zero;
-            if (x > Mathf.Cos(upBoundsAngle * Mathf.PI))
+            if (x > Mathf.Cos(upRegionBeginAngle * DEGREES_TO_RADIANS))
             {
                 dirVec.x = 1;
             }
-            else if (x < Mathf.Cos(rightBoundsAngle * Mathf.PI))
+            else if (x < Mathf.Cos(upRegionEndAngle * DEGREES_TO_RADIANS))
             {
                 dirVec.x = -1;
             }
-            if (y > Mathf.Sin(leftBoundsAngle * Mathf.PI))
+            if (y > Mathf.Sin(leftRegionBeginAngle * DEGREES_TO_RADIANS))
             {
                 dirVec.y = 1;
             }
-            else if (y < Mathf.Sin(downBoundsAngle * Mathf.PI))
+            else if (y < Mathf.Sin(leftRegionEndAngle * DEGREES_TO_RADIANS))
             {
                 dirVec.y = -1;
             }
@@ -157,6 +157,8 @@ public class IGJInputManager : MonoBehaviour
     private const string P4_X = "player4_x";
     private const string P4_Y = "player4_y";
     private const string P4_ACTION = "player4_action";
+
+    private const float DEGREES_TO_RADIANS = 0.01745329251994329576923690768489f;
 
     private InputState[] inputStates;
 }

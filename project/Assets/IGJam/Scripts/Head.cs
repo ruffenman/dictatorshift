@@ -8,6 +8,10 @@ public class Head : BodyPart
     private bool mShouldFire = false;
     private Lazer.PowerLevel mCurrentPowerLevel = Lazer.PowerLevel.None;
     private IGJInputManager.InputDirection mDirection;
+    private float mCooldown = 0.0f;
+
+    const double mediumPowerLevelTime = 0.334f;
+    const double highPowerLevelTime = 0.667f;
 
 	public Head(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 		: base(BodyPart.BodyPartType.HEAD, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
@@ -17,17 +21,29 @@ public class Head : BodyPart
 	// Update is called once per frame
 	public override void Update()
     {
-        mDirection = lastInputState.direction;
-
-        // check to see if this frame will be firing
-        UpdateFiringStatus();
-
-        //  if the button is pushed, then we can check for lazer firing
-        if (mShouldFire)
+        if (mCooldown > 0.0f)
         {
-            FireTheLazer();
+            UpdateCooldown();
+        }
+        else
+        {
+            mDirection = lastInputState.direction;
+
+            // check to see if this frame will be firing
+            UpdateFiringStatus();
+
+            //  if the button is pushed, then we can check for lazer firing
+            if (mShouldFire)
+            {
+                FireTheLazer();
+            }
         }
 	}
+
+    private void UpdateCooldown()
+    {
+        mCooldown -= Time.deltaTime;
+    }
 
     private void UpdateFiringStatus()
     {
@@ -44,9 +60,6 @@ public class Head : BodyPart
 
     private void UpdatePowerLevel()
     {
-        const double mediumPowerLevelTime = 1.0f; // 1 second
-        const double highPowerLevelTime = 2.0f;
-
         mCurrentPowerLevel = Lazer.PowerLevel.None;
         if (mPowerLevelTimer >= highPowerLevelTime)
         {
@@ -64,6 +77,20 @@ public class Head : BodyPart
 
     private void FireTheLazer()
     {
+        mCooldown = 0.0f;
+        if (mPowerLevelTimer >= highPowerLevelTime)
+        {
+            mCooldown = 1.0f;
+        }
+        else if (mPowerLevelTimer >= mediumPowerLevelTime)
+        {
+            mCooldown = 0.667f;
+        }
+        else
+        {
+            mCooldown = 0.334f;
+        }
+
         mShouldFire = false;
         mPowerLevelTimer = 0.0f;
         combinedPlayer.FireTheLazer(mCurrentPowerLevel, mDirection);

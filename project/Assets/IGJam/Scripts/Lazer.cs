@@ -19,34 +19,45 @@ public class Lazer : MonoBehaviour
     private Vector3 mMidScaleVec;
     private Vector3 mEndPosVec;
 
+    private Vector3 mOffset;
+
     private Transform mPivot = null;
+    private Transform mStartSection = null;
     private Transform mMiddleSection = null;
     private Transform mEndSection = null;
+    private Transform mPlayerHead = null;
 
 	// Use this for initialization
 	void Start ()
     {
         mPivot = transform.FindChild("Pivot");
+        mStartSection = mPivot.FindChild("Start");
         mMiddleSection = mPivot.FindChild("Middle");
         mEndSection = mPivot.FindChild("End");
 
+        CombinedPlayer player = JamGame.instance.player;
+        mPlayerHead = player.transform.FindChild("Graphics").FindChild("Head");
+
         mPivot.localRotation = Quaternion.AngleAxis(mAngle, Vector3.forward);
+
+        mOffset = new Vector3(0.275f, 0.2f, 0.0f);
+
+        //update the location
+        transform.position = mPlayerHead.position + mOffset;
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
         //update the location
-        Vector3 offset = new Vector3(0.65f, 0.3f, 0.0f);
-        CombinedPlayer player = JamGame.instance.player;
-        transform.position = player.transform.FindChild("Head").position + offset;
-
+        transform.position = mPlayerHead.position + mOffset;
 
         //  scale the lazer
-        const float SCALE = 10.0f;
+        const float SCALE = 100.0f;
         float sizeIncrease = Time.deltaTime;
+
         mMiddleSection.localPosition += new Vector3(sizeIncrease * SCALE, 0.0f, 0.0f);
-        mMiddleSection.localScale += new Vector3(0.0f, sizeIncrease * 12.5f * SCALE, 0.0f);
+        mMiddleSection.localScale += new Vector3(0.0f, sizeIncrease * 2.0f * SCALE, 0.0f);
         mEndSection.localPosition += new Vector3(sizeIncrease * 2.0f * SCALE, 0.0f, 0.0f);
 
         if (mMiddleSection.localScale.y >= 50)
@@ -62,11 +73,11 @@ public class Lazer : MonoBehaviour
 
         if (mPowerLevel == PowerLevel.Low)
         {
-            //transform.localScale -= new Vector3(0.0f, 2.5f, 0.0f);
+            transform.localScale -= new Vector3(0.25f, 0.25f, 0.0f);
         }
         else if (mPowerLevel == PowerLevel.High)
         {
-            transform.localScale += new Vector3(0.0f, 2.5f, 0.0f);
+            transform.localScale += new Vector3(0.25f, 0.25f, 0.0f);
         }
 
         mAngle = 0.0f;
