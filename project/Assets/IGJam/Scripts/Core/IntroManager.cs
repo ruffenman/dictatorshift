@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class IntroManager : MonoBehaviour 
 {
+	public string SCENE_TO_LOAD_NEXT = "StartScene";
 	float playerFakeGravityY = -3f;
 	//float playerFloorPositionY = -3.44f;
 	//float wallBoundsX = -5.4f;
@@ -38,6 +39,7 @@ public class IntroManager : MonoBehaviour
 
 	void Awake()
 	{
+		// assume direct control
 		IGJInputManager.overrideInputForIntro = true;
 		introManager = this;
 		playerInputStates = new IGJInputManager.InputState[4] 
@@ -49,17 +51,11 @@ public class IntroManager : MonoBehaviour
 		};
 	}
 
-	void Start()
-	{
-		// assume direct control
-	}
-	
 	void CloseAndStartGame()
 	{
 		// nuke this entire prefab
-		// create the first level
 		IGJInputManager.overrideInputForIntro = false;
-		
+		Application.LoadLevel (SCENE_TO_LOAD_NEXT);
 	}
 	
 	void Update()
