@@ -22,7 +22,7 @@ public class LazerCollider : WorldObject
 			WorldObject worldObject = other.GetComponent<WorldObject>();
             DeadlyObject deadlyObject = worldObject as DeadlyObject;
             
-			if (worldObject != null)
+			if (worldObject != null && (!worldObject.gameObject.CompareTag("Player")))
             {
 				bool canDestroy = true;
 
