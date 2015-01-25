@@ -15,13 +15,28 @@ public class LazerCollider : WorldObject
     {
         if (mMahLazer.GetPowerLevel() != Lazer.PowerLevel.None)
         {
-            DeadlyObject deadlyObject = other.GetComponent<DeadlyObject>();
-            if (deadlyObject != null)
+			WorldObject worldObject = other.GetComponent<WorldObject>();
+            DeadlyObject deadlyObject = worldObject as DeadlyObject;
+            
+			if (worldObject != null)
             {
-                deadlyObject.OnCollideWithTarget(gameObject);
-                if (deadlyObject.destroyOnCollision)
+				bool canDestroy = true;
+
+				if (deadlyObject)
+				{
+					canDestroy = deadlyObject.destroyOnCollision;
+				}
+                if (canDestroy)
                 {
-                    mMahLazer.OnLowerPowerLevel();
+					if (deadlyObject)
+					{
+						deadlyObject.OnCollideWithTarget(gameObject);
+					}
+					else
+					{
+						worldObject.TakeDamage(500);
+					}
+					mMahLazer.OnLowerPowerLevel();
                 }
             }
         }

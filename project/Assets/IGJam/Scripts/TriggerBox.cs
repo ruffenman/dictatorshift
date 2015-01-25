@@ -16,11 +16,11 @@ public class TriggerBox : MonoBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
-		Debug.Log ("TriggerBox -- got trigger collision!");
+		//Debug.Log ("TriggerBox -- got trigger collision!");
 		if(other.name == VALID_NAME || other.tag == VALID_TAG)
 		{
-			Debug.Log ("TriggerBox -- got valid collision!");
-			other.SendMessageUpwards (FUNCTION_NAME_TO_CALL);
+			//Debug.Log ("TriggerBox -- got valid collision!");
+			this.gameObject.SendMessageUpwards (FUNCTION_NAME_TO_CALL, SendMessageOptions.DontRequireReceiver);
 		}
 	}
 	
