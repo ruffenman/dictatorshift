@@ -11,8 +11,10 @@ public class Lazer : WorldObject
         High
     }
 
-    public const float mLazerSpeed = 1.0f;
+    public const float mLazerSpeed = 100.0f;
     public const float mLazerLength = 100.0f;
+    public const float mLazerTimer = 3.0f;
+    public float mLazerCurrentTimer = 3.0f;
     Vector3 mPowerSizeScale = new Vector3(0.5f, 0.0f, 0.0f);
 
     private PowerLevel mPowerLevel = PowerLevel.None;
@@ -58,6 +60,8 @@ public class Lazer : WorldObject
             mMiddleSection.transform.localScale += mPowerSizeScale;
             mEndSection.transform.localScale += mPowerSizeScale;
         }
+
+        mLazerCurrentTimer = mLazerTimer;
 	}
 
     public void SetLazerStrength(PowerLevel powerLevel, IGJInputManager.InputDirection direction)
@@ -100,6 +104,8 @@ public class Lazer : WorldObject
 
     protected override void UpdateInternal()
     {
+        mLazerCurrentTimer -= Time.deltaTime;
+
         //update the location
         transform.position = mPlayerHead.position + mOffset;
 
@@ -110,10 +116,11 @@ public class Lazer : WorldObject
         mMiddleSection.localScale += new Vector3(0.0f, sizeIncrease * 2.0f * mLazerSpeed, 0.0f);
         mEndSection.localPosition += new Vector3(sizeIncrease * 2.0f * mLazerSpeed, 0.0f, 0.0f);
 
-        if (mMiddleSection.localScale.y >= mLazerLength || mPowerLevel == PowerLevel.None)
+        if (mMiddleSection.localScale.y >= mLazerLength || mPowerLevel == PowerLevel.None || mLazerTimer < 0)
         {
             Destroy(gameObject);
         }
+
     }
 
     public void OnLowerPowerLevel()
