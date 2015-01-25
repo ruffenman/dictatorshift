@@ -7,6 +7,7 @@ public class Sheep : DeadlyObject
 	//properties
 	public float walkRange = 10;
 	public float sightRange = 15;
+	public float raycastWidth = 1.5f;
 	public int numberOfRays = 3;
 	public float closeEnoughToJumpDistance = 1f;
 	public float closeEnoughToRunDistance = 2f;
@@ -15,6 +16,8 @@ public class Sheep : DeadlyObject
 	public float runSpeed = 3f;
 	public float jumpSpeed = 10f;
 	public float explosionTime = 0.43f;
+	public float stopTime = 1f;
+	public float perfectSpeedForJump = 5f;
 
 	// utility
 	private Vector3 startingPosition;
@@ -23,6 +26,7 @@ public class Sheep : DeadlyObject
 	private bool facingLeft;
 	private Animator animator;
 	private bool dead = false;
+	private bool stopped = false;
 
 	void OnDrawGizmos()
 	{
@@ -61,8 +65,7 @@ public class Sheep : DeadlyObject
 				// determine target
 				foreach (GameObject go in found)
 				{
-					CombinedPlayer player = go.GetComponent<CombinedPlayer>();
-					if (player != null)
+					if (go.CompareTag("Player"))
 					{
 						target = go;
 					}
@@ -105,25 +108,21 @@ public class Sheep : DeadlyObject
 				}
 			}
 
-			if (target == null)
+			if ((target == null) && !stopped)
 			{
 				// follow path at walk speed
 				speed = walkSpeed;
 
 				if (((transform.position.x < leftBound) && facingLeft) || ((transform.position.x > rightBound) && !facingLeft))
 				{
-					TurnAround();
+					InitiateTurnAround();
 					direction = -direction;
-				}
-
-				if (grounded)
-				{
-					animator.Play("Walk");
 				}
 			}
 
 			// animation
 			string animState = "Walk";
+
 			if (!grounded || (speed == jogSpeed))
 			{
 				animState = "Hop";
@@ -132,7 +131,7 @@ public class Sheep : DeadlyObject
 			{
 				animState = "Run";
 			}
-			else if (speed == 0)
+			else if (stopped)
 			{
 				animState = "Idle";
 			}
@@ -147,13 +146,36 @@ public class Sheep : DeadlyObject
 	void Jump()
 	{
 		Vector3 direction = facingLeft ? Vector3.left : Vector3.right;
-		AddVelocity((Vector3.up * jumpSpeed) + (direction * jumpSpeed / 2));
+		float ratio = GetVelocity().x / perfectSpeedForJump;
+		AddVelocity(((Vector3.up * jumpSpeed) + (direction * jumpSpeed / 3)) * ratio);
+	}
+
+	void Stop()
+	{
+		stopped = true;
+		Vector3 vel = GetVelocity();
+		SetVelocity(new Vector3(0, vel.y, 0));
+	}
+
+	void Resume()
+	{
+		stopped = false;
 	}
 
 	void TurnAround()
 	{
 		facingLeft = !facingLeft;
 		transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+		if (stopped)
+		{
+			Resume();
+		}
+	}
+
+	void InitiateTurnAround()
+	{
+		Stop();
+		StartCoroutine(Utility.Delay(stopTime, TurnAround));
 	}
 
 	List<GameObject> LookAhead()
@@ -162,10 +184,10 @@ public class Sheep : DeadlyObject
 		float raycastBuffer = 0.2f;
 
 		Vector3 origin = transform.position;
-		origin.y = (origin.y - (transform.localScale.y / 2f)) + raycastBuffer;
+		origin.y = (origin.y - (raycastWidth / 2f)) + raycastBuffer;
 		Vector3 direction = facingLeft ? Vector3.left : Vector3.right;
 
-		float increaseHeight = (transform.localScale.y - (2 * raycastBuffer)) / ((float)numberOfRays - 1);
+		float increaseHeight = (raycastWidth - (2 * raycastBuffer)) / ((float)numberOfRays - 1);
 
 		for (int i = 0; i < numberOfRays; ++i)
 		{

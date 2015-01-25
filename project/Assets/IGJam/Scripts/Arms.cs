@@ -51,6 +51,7 @@ public class Arms : BodyPart
 		armsColliderObject.name = "Arms Collider -- owned by Arms.cs";
 		armsColliderObject.AddComponent<ArmsCollider>();
 		armsColliderObject.layer = newSpriteTransform.gameObject.layer;
+		armsColliderObject.tag = newSpriteTransform.gameObject.tag;
 		armsCollider = armsColliderObject.GetComponent<ArmsCollider>();
 		BoxCollider bc = armsColliderObject.AddComponent<BoxCollider>();
 		bc.size = new Vector3(1,1,1);
