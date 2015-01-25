@@ -25,10 +25,11 @@ public class CombinedPlayer : WorldObject
     public void ReceiveInput(IGJInputManager.InputState[] inputStates)
     {
         // TODO: Mess with player -> body assignments
-        //for (int i = 0; i < inputStates.Length; ++i)
-        //{
-        //    bodyParts[i].ReceiveInput(inputStates[i]);
-        //}
+        for (int i = 0; i < inputStates.Length; ++i)
+        {
+            bodyParts[i].ReceiveInput(inputStates[i]);
+        }
+/*
         if (Input.GetKeyDown(KeyCode.W))
         {
             //increment the current body part to get input
@@ -43,6 +44,7 @@ public class CombinedPlayer : WorldObject
         }
 
         bodyParts[debugGetInput].ReceiveInput(inputStates[0]);
+*/
     }
 
 	new void Start ()
