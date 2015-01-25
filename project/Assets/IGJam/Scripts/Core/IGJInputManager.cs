@@ -30,6 +30,8 @@ public class IGJInputManager : MonoBehaviour
     public float leftRegionBeginAngle = 157.5f;
     public float leftRegionEndAngle = 202.5f;
     
+    public static bool overrideInputForIntro = false; // added by Paul to hijack input for intro
+    
 	// Use this for initialization
 	private void Start () 
     {
@@ -141,8 +143,15 @@ public class IGJInputManager : MonoBehaviour
         // Process player 4
         processInputFunc(P4_X, P4_Y, P4_ACTION, inputStates[3]);
 
-        CombinedPlayer player = JamGame.instance.player;
-        player.ReceiveInput(inputStates);
+		if(overrideInputForIntro) // added by Paul to hijack input for intro sequence
+		{
+			IntroManager.introManager.ReceiveInput(inputStates);
+		}
+		else
+		{
+        	CombinedPlayer player = JamGame.instance.player;
+       	 player.ReceiveInput(inputStates);
+        }
 	}
 
     private const string P1_X = "player1_x";
