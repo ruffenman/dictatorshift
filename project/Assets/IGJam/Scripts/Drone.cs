@@ -14,7 +14,9 @@ public class Drone : DeadlyObject
 
 	// utility
 	private Animator animator;
-	private bool dead = false;
+	private bool dead;
+	private float initialLocalScaleX;
+	private bool goingLeft;
 
 	new void Start () 
 	{
@@ -22,6 +24,7 @@ public class Drone : DeadlyObject
 		animator = GetComponent<Animator>();
 		CombinedPlayer player = FindObjectOfType<CombinedPlayer>();
 		target = player.gameObject;
+		initialLocalScaleX = transform.localScale.x;
 	}
 
 	void OnDrawGizmos()
@@ -37,10 +40,13 @@ public class Drone : DeadlyObject
 			float distance = toTarget.sqrMagnitude;
 			if (distance < (shouldFollowDistance * shouldFollowDistance))
 			{
-				animator.Play("Fly");
-				Vector3 velocity = toTarget.normalized * flySpeed;
+				Vector3 newVelocity = toTarget.normalized * flySpeed;
 				Vector3 origin = transform.position;
-				origin.x -= frontOfDroneOffset;
+
+				goingLeft = newVelocity.x < 0;
+
+				float offset = goingLeft ? -frontOfDroneOffset : frontOfDroneOffset;
+				origin.x += offset;
 
 				RaycastHit hit;
 				Debug.DrawRay(origin, Vector3.down * hoverDistance, Color.red);
@@ -48,11 +54,18 @@ public class Drone : DeadlyObject
 				{
 					if (!hit.collider.gameObject.CompareTag("Player"))
 					{
-						velocity.y = 0;
+						newVelocity.y = 0;
 					}
 				}
 
-				SetVelocity(velocity);
+				SetVelocity(newVelocity);
+				animator.Play("Fly");
+
+				if (newVelocity.x != 0)
+				{
+					float newScale = goingLeft ? -initialLocalScaleX : initialLocalScaleX;
+					transform.localScale = new Vector3(newScale, transform.localScale.y, transform.localScale.z);
+				}
 			}
 		}
 	}
