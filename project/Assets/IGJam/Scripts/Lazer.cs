@@ -11,7 +11,7 @@ public class Lazer : WorldObject
         High
     }
 
-    public const float mLazerSpeed = 100.0f;
+    public const float mLazerSpeed = 1.0f;
     public const float mLazerLength = 100.0f;
     Vector3 mPowerSizeScale = new Vector3(0.5f, 0.0f, 0.0f);
 
@@ -35,7 +35,7 @@ public class Lazer : WorldObject
         mEndSection = mPivot.FindChild("End");
 
         CombinedPlayer player = JamGame.instance.player;
-        mPlayerHead = player.transform.FindChild("Graphics").FindChild("Head");
+        mPlayerHead = player.transform.FindChild("Graphics");
 
         mPivot.localRotation = Quaternion.AngleAxis(mAngle, Vector3.forward);
 
@@ -68,6 +68,9 @@ public class Lazer : WorldObject
         mAngle = 0.0f;
         switch (mDirection)
         {
+            case IGJInputManager.InputDirection.Right:
+                mAngle = 0.0f;
+                break;
             case IGJInputManager.InputDirection.UpRight:
                 mAngle = 45.0f;
                 break;
@@ -89,24 +92,9 @@ public class Lazer : WorldObject
             case IGJInputManager.InputDirection.DownRight:
                 mAngle = 315.0f;
                 break;
-            case IGJInputManager.InputDirection.Right:
-            // fallthrough
             default:
                 // do nothing
                 break;
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        DeadlyObject deadlyObject = other.GetComponent<DeadlyObject>();
-        if (deadlyObject != null)
-        {
-            deadlyObject.OnCollideWithTarget(gameObject);
-            if (deadlyObject.destroyOnCollision)
-            {
-                OnLowerPowerLevel();
-            }
         }
     }
 
