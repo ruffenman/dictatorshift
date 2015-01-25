@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class SoundManager : MonoBehaviour 
 {
+	public static SoundManager instance;
+
     public const string MUSIC_DINNER_PARTY = "DinnerParty";
     public const string MUSIC_PAUSE = "Pause";
     public const string MUSIC_TITLE_MENU = "TitleMenu";
@@ -122,6 +124,8 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
+    	instance = this;
+    
         mMusicByName = new Dictionary<string, AudioSource>();
         foreach (AudioSource musicSource in mMusicSources)
         {

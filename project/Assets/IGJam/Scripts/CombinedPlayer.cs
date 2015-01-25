@@ -64,6 +64,7 @@ public class CombinedPlayer : WorldObject
 
     public void ShuffleInputs()
     {
+		SoundManager.instance.PlaySfx (SoundManager.SFX_TELEPORT);
         List<int> partIndexesToAssign = new List<int>(new int[]{0, 1, 2, 3});
         for (int i = 0; i < playerToBodyMapping.Length; ++i)
         {
@@ -134,6 +135,7 @@ public class CombinedPlayer : WorldObject
 
 	protected override void Die()
 	{
+		SoundManager.instance.PlaySfx (SoundManager.SFX_GET_HIT);
 		Debug.Log ("DIED");
 		if (deathParticles != null)
 		{
@@ -176,6 +178,7 @@ public class CombinedPlayer : WorldObject
 
     public void FireTheLazer(Lazer.PowerLevel powerLevel, IGJInputManager.InputDirection direction)
     {
+    	SoundManager.instance.PlaySfx (SoundManager.SFX_LASER_BEAM);
         GameObject Clone;
         Vector3 pos = bodyPartTransforms[(int)BodyPart.BodyPartType.HEAD].position;
         Clone = (Instantiate(lazerPrefab, pos, transform.rotation)) as GameObject;

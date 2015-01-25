@@ -97,6 +97,7 @@ public class Body : BodyPart
 			// and received button press and direction
 			if (lastInputState.actionJustPressed)
 			{
+				SoundManager.instance.PlaySfx (SoundManager.SFX_JUMP);
 				float speed = thrustSpeedVertical;
 				if ((lastInputState.direction == IGJInputManager.InputDirection.DownLeft) 
 					|| (lastInputState.direction == IGJInputManager.InputDirection.DownRight)

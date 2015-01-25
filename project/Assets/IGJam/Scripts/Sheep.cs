@@ -216,6 +216,7 @@ public class Sheep : DeadlyObject
 			worldObject.TakeDamage(damage);
 			if (destroyOnCollision)
 			{
+				SoundManager.instance.PlaySfx (SoundManager.SFX_EXPLOSION);
 				animator.Play("Explode");
 				dead = true;
 				StartCoroutine(Utility.Delay(explosionTime, CompleteDestruction));
