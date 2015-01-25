@@ -41,6 +41,7 @@ public class BodyPart
         lastInputState.direction = inputState.direction;
         lastInputState.actionPressed = inputState.actionPressed;
         lastInputState.actionJustPressed = inputState.actionJustPressed;
+        lastInputState.actionJustReleased = inputState.actionJustReleased;
 
         OnInputReceived();
     }
