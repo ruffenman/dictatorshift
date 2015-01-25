@@ -13,12 +13,16 @@ public class LazerCollider : WorldObject
 
     void OnTriggerEnter(Collider other)
     {
-        if (mMahLazer.GetPowerLevel() != Lazer.PowerLevel.None)
+		if (mMahLazer == null)
+		{
+			mMahLazer = transform.parent.parent.gameObject.GetComponent<Lazer>();
+		}
+        if ((mMahLazer) && (mMahLazer.GetPowerLevel() != Lazer.PowerLevel.None))
         {
 			WorldObject worldObject = other.GetComponent<WorldObject>();
             DeadlyObject deadlyObject = worldObject as DeadlyObject;
             
-			if (worldObject != null)
+			if (worldObject != null && (!worldObject.gameObject.CompareTag("Player")))
             {
 				bool canDestroy = true;
 

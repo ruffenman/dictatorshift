@@ -13,6 +13,7 @@ public class Lazer : WorldObject
 
     public const float mLazerSpeed = 100.0f;
     public const float mLazerLength = 100.0f;
+    public const float mLazerTimer = 1.35f;
     Vector3 mPowerSizeScale = new Vector3(0.5f, 0.0f, 0.0f);
 
     private PowerLevel mPowerLevel = PowerLevel.None;
@@ -25,6 +26,7 @@ public class Lazer : WorldObject
     private Transform mMiddleSection = null;
     private Transform mEndSection = null;
     private Transform mPlayerHead = null;
+    public float mLazerCurrentTimer;
 
 	// Use this for initialization
     new void Start()
@@ -35,7 +37,7 @@ public class Lazer : WorldObject
         mEndSection = mPivot.FindChild("End");
 
         CombinedPlayer player = JamGame.instance.player;
-        mPlayerHead = player.transform.FindChild("Graphics").FindChild("Head");
+        mPlayerHead = player.transform.FindChild("Graphics");
 
         mPivot.localRotation = Quaternion.AngleAxis(mAngle, Vector3.forward);
 
@@ -58,6 +60,8 @@ public class Lazer : WorldObject
             mMiddleSection.transform.localScale += mPowerSizeScale;
             mEndSection.transform.localScale += mPowerSizeScale;
         }
+
+        mLazerCurrentTimer = mLazerTimer;
 	}
 
     public void SetLazerStrength(PowerLevel powerLevel, IGJInputManager.InputDirection direction)
@@ -68,6 +72,9 @@ public class Lazer : WorldObject
         mAngle = 0.0f;
         switch (mDirection)
         {
+            case IGJInputManager.InputDirection.Right:
+                mAngle = 0.0f;
+                break;
             case IGJInputManager.InputDirection.UpRight:
                 mAngle = 45.0f;
                 break;
@@ -89,29 +96,16 @@ public class Lazer : WorldObject
             case IGJInputManager.InputDirection.DownRight:
                 mAngle = 315.0f;
                 break;
-            case IGJInputManager.InputDirection.Right:
-            // fallthrough
             default:
                 // do nothing
                 break;
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        DeadlyObject deadlyObject = other.GetComponent<DeadlyObject>();
-        if (deadlyObject != null)
-        {
-            deadlyObject.OnCollideWithTarget(gameObject);
-            if (deadlyObject.destroyOnCollision)
-            {
-                OnLowerPowerLevel();
-            }
-        }
-    }
-
     protected override void UpdateInternal()
     {
+        mLazerCurrentTimer -= Time.deltaTime;
+
         //update the location
         transform.position = mPlayerHead.position + mOffset;
 
@@ -122,10 +116,11 @@ public class Lazer : WorldObject
         mMiddleSection.localScale += new Vector3(0.0f, sizeIncrease * 2.0f * mLazerSpeed, 0.0f);
         mEndSection.localPosition += new Vector3(sizeIncrease * 2.0f * mLazerSpeed, 0.0f, 0.0f);
 
-        if (mMiddleSection.localScale.y >= mLazerLength || mPowerLevel == PowerLevel.None)
+        if (mLazerCurrentTimer < 0 || mPowerLevel == PowerLevel.None)
         {
             Destroy(gameObject);
         }
+
     }
 
     public void OnLowerPowerLevel()

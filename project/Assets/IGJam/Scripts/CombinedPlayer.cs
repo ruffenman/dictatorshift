@@ -6,9 +6,9 @@ public class CombinedPlayer : WorldObject
 {
 	//properties
     public GameObject lazerPrefab;
-	private float respawnDelay = 0.5f;
-	private float respawnMoveTime = 0.15f;
-    public GameObject deathParticles;
+	private float respawnDelay = 0.45f;
+	private float respawnMoveTime = 0.25f;
+	private float particleTime = 0.75f;
 
 	// utility
 	BodyPart[] bodyParts;
@@ -64,6 +64,7 @@ public class CombinedPlayer : WorldObject
 
     public void ShuffleInputs()
     {
+		SoundManager.instance.PlaySfx (SoundManager.SFX_TELEPORT);
         List<int> partIndexesToAssign = new List<int>(new int[]{0, 1, 2, 3});
         for (int i = 0; i < playerToBodyMapping.Length; ++i)
         {
@@ -135,12 +136,23 @@ public class CombinedPlayer : WorldObject
 
 	protected override void Die()
 	{
+		SoundManager.instance.PlaySfx (SoundManager.SFX_GET_HIT);
+		Debug.Log ("DIED");
 		if (deathParticles != null)
 		{
 			deathParticles.particleSystem.Play();
 		}
 		dead = true;
+		StartCoroutine(Utility.Delay(particleTime, AfterDeathParticles));
+	}
+
+	void AfterDeathParticles()
+	{
 		SetVisible(false);
+		if (deathParticles != null)
+		{
+			deathParticles.particleSystem.Clear();
+		}
 		StartCoroutine(Utility.Delay(respawnDelay, Respawn));
 	}
 
@@ -167,6 +179,7 @@ public class CombinedPlayer : WorldObject
 
     public void FireTheLazer(Lazer.PowerLevel powerLevel, IGJInputManager.InputDirection direction)
     {
+    	SoundManager.instance.PlaySfx (SoundManager.SFX_LASER_BEAM);
         GameObject Clone;
         Vector3 pos = bodyPartTransforms[(int)BodyPart.BodyPartType.HEAD].position;
         Clone = (Instantiate(lazerPrefab, pos, transform.rotation)) as GameObject;

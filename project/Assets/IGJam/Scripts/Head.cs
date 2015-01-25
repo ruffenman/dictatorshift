@@ -223,45 +223,19 @@ public class Head : BodyPart
         mShouldFire = false;
         mPowerLevelTimer = 0.0f;
 
-        // Handle facing direction
-        IGJInputManager.InputDirection directionAfterFacingFlipping = mDirection;
-        if (isFacingLeft)
+        if (mDirection == IGJInputManager.InputDirection.None)
         {
-            switch (directionAfterFacingFlipping)
+            if (isFacingLeft)
             {
-                case IGJInputManager.InputDirection.UpRight:
-                    {
-                        directionAfterFacingFlipping = IGJInputManager.InputDirection.UpLeft;
-                    } break;
-
-                case IGJInputManager.InputDirection.Right:
-                    {
-                        directionAfterFacingFlipping = IGJInputManager.InputDirection.Left;
-                    } break;
-
-                case IGJInputManager.InputDirection.DownRight:
-                    {
-                        directionAfterFacingFlipping = IGJInputManager.InputDirection.DownLeft;
-                    } break;
-
-                case IGJInputManager.InputDirection.DownLeft:
-                    {
-                        directionAfterFacingFlipping = IGJInputManager.InputDirection.DownRight;
-                    } break;
-
-                case IGJInputManager.InputDirection.Left:
-                    {
-                        directionAfterFacingFlipping = IGJInputManager.InputDirection.Right;
-                    } break;
-
-                case IGJInputManager.InputDirection.UpLeft:
-                    {
-                        directionAfterFacingFlipping = IGJInputManager.InputDirection.UpRight;
-                    } break;
+                mDirection = IGJInputManager.InputDirection.Left;
+            }
+            else
+            {
+                mDirection = IGJInputManager.InputDirection.Right;
             }
         }
 
-        combinedPlayer.FireTheLazer(mCurrentPowerLevel, directionAfterFacingFlipping);
+        combinedPlayer.FireTheLazer(mCurrentPowerLevel, mDirection);
 
         firingAnimationPlaying = true;
         combinedPlayer.StartCoroutine(Utility.Delay(0.5f, OnFireAnimationDone));

@@ -20,6 +20,7 @@ public class WorldObject : MonoBehaviour
 	public float groundedOffset = 0.5f;
 	public LayerMask groundedLayerMask;
 	public bool useFixedUpdate = true;
+	public GameObject deathParticles;
 
 	// utility
 	protected bool grounded;
@@ -101,6 +102,19 @@ public class WorldObject : MonoBehaviour
 	}
 
 	protected virtual void Die()
+	{
+		if (deathParticles)
+		{
+			deathParticles.particleSystem.Play();
+			StartCoroutine(Utility.Delay(deathParticles.particleSystem.duration + deathParticles.particleSystem.startLifetime, FinishDestroy));
+		}
+		else
+		{
+			FinishDestroy();
+		}
+	}
+
+	protected void FinishDestroy()
 	{
 		Destroy(gameObject);
 	}

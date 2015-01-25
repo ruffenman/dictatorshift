@@ -26,7 +26,8 @@ public class IntroManager : MonoBehaviour
 	public List<GameObject> playerTeleportersWaiting;
 	public List<GameObject> playerTeleportersDone;
 	public IGJInputManager.InputState[] playerInputStates;
-
+	public GameObject backgroundMusicPrefab;
+	
 	public static IntroManager introManager;
 
 	public void ReceiveInput(IGJInputManager.InputState[] inputStates)
@@ -49,6 +50,8 @@ public class IntroManager : MonoBehaviour
 			new IGJInputManager.InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false},
 			new IGJInputManager.InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false},
 		};
+		
+		GameObject.Instantiate (backgroundMusicPrefab);
 	}
 
 	void CloseAndStartGame()
@@ -226,6 +229,7 @@ public class IntroManager : MonoBehaviour
 	
 	void HandlePlayerJoined(int player)
 	{
+		SoundManager.instance.PlaySfx (SoundManager.SFX_TELEPORT);
 		playersInGame[player] = true;
 		fakePlayerObjects[player].SetActive (true);
 		playerStartPrompts[player].SetActive (false);
@@ -235,6 +239,7 @@ public class IntroManager : MonoBehaviour
 	
 	void HandlePlayerEnteredPortal(int player)
 	{
+		SoundManager.instance.PlaySfx (SoundManager.SFX_TELEPORT);
 		playersInTeleporter[player] = true;
 		fakePlayerObjects[player].transform.Translate (new Vector3(0,0.3f,0));
 		fakePlayerObjects[player].GetComponent<FakeAnimator>().PauseAndIdle();
