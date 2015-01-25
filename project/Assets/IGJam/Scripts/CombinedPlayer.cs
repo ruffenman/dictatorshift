@@ -5,7 +5,8 @@ public class CombinedPlayer : WorldObject
 {
 	//properties
     public GameObject lazerPrefab;
-	private float respawnDelay = 0.5f;
+    public GameObject deathParticles;
+	private float respawnDelay = 1f;
 
 	// utility
 	BodyPart[] bodyParts;
@@ -87,14 +88,14 @@ public class CombinedPlayer : WorldObject
 
 	protected override void Die()
 	{
+		deathParticles.particleSystem.Play ();
 		dead = true;
-		SetVisible(false);
-		transform.position = lastRespawnPoint.position;
 		StartCoroutine(Utility.Delay(respawnDelay, Respawn));
 	}
 
 	void Respawn()
 	{
+		transform.position = lastRespawnPoint.position;
 		dead = false;
 		SetVisible(true);
 	}
@@ -110,12 +111,8 @@ public class CombinedPlayer : WorldObject
 
     public void FireTheLazer(Lazer.PowerLevel powerLevel, IGJInputManager.InputDirection direction)
     {
-        const float xOffset = 0.65f;
-        const float yOffset = 0.3f;
         GameObject Clone;
         Vector3 pos = bodyPartTransforms[(int)BodyPart.BodyPartType.HEAD].position;
-        pos.x += xOffset;
-        pos.y += yOffset;
         Clone = (Instantiate(lazerPrefab, pos, transform.rotation)) as GameObject;
         Lazer lazer = (Lazer)Clone.GetComponent(typeof(Lazer));
         lazer.SetLazerStrength(powerLevel, direction);

@@ -44,8 +44,8 @@ public class Head : BodyPart
 
     private void UpdatePowerLevel()
     {
-        const double mediumPowerLevelTime = 1.0f; // 1 second
-        const double highPowerLevelTime = 2.0f;
+        const double mediumPowerLevelTime = 0.5f; // half a second
+        const double highPowerLevelTime = 1.0f; // 1 second
 
         mCurrentPowerLevel = Lazer.PowerLevel.None;
         if (mPowerLevelTimer >= highPowerLevelTime)
