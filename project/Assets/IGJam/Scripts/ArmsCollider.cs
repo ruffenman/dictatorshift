@@ -38,8 +38,8 @@ public class ArmsCollider : MonoBehaviour
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if(other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE &&
-			other.name != "Player")
+		if(other.name != "Player" && other.GetComponent<WorldObject>() && 
+            other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE)
 		{
 			ReportAddInteractiveCollision(other.gameObject);
 		}
@@ -47,8 +47,7 @@ public class ArmsCollider : MonoBehaviour
 	
 	void OnTriggerExit(Collider other)
 	{
-		if(other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE &&
-		   other.name != "Player") 
+		if(other.name != "Player" && other.GetComponent<WorldObject>() && other.GetComponent<WorldObject>().objectType == WorldObject.ObjectType.INTERACTIVE) 
 		{
 			ReportRemoveInteractiveCollision(other.gameObject);
 		}
