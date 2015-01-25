@@ -70,7 +70,7 @@ public class Sheep : DeadlyObject
 					{
                         if(!target)
                         {
-                            JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_SHEEP);
+                            //JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_SHEEP);
                         }
 						target = go;
 					}
