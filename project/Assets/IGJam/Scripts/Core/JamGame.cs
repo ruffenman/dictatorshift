@@ -32,7 +32,7 @@ public class JamGame : MonoBehaviour
 
     private void Start()
     {
-        soundMgr.PlayMusic(SoundManager.MUSIC_STAGE01);
+        //soundMgr.PlayMusic(SoundManager.MUSIC_STAGE01);
     }
 
     private IGJInputManager inputMgr;

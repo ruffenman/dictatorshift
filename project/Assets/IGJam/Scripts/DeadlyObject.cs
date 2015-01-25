@@ -10,12 +10,14 @@ public class DeadlyObject : WorldObject
 
 	public virtual void OnCollideWithTarget(GameObject target)
 	{
+		Debug.Log ("CAUSED COLLIDE");
 		WorldObject worldObject = target.GetComponent<WorldObject>();
 		if ((worldObject != null) && !defanged)
 		{
+			Debug.Log ("CAUSED DAMAGE");
+			worldObject.TakeDamage(damage);
 			if(destroyOnCollision)
 			{
-				worldObject.TakeDamage(damage);
 				Destroy(gameObject);
 			}
 		}
