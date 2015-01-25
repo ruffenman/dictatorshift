@@ -20,12 +20,17 @@ public class TriggerBox : MonoBehaviour
 		if(other.name == VALID_NAME || other.tag == VALID_TAG)
 		{
 			//Debug.Log ("TriggerBox -- got valid collision!");
-			this.gameObject.SendMessageUpwards (FUNCTION_NAME_TO_CALL, SendMessageOptions.DontRequireReceiver);
+			this.gameObject.SendMessageUpwards (FUNCTION_NAME_TO_CALL, other, SendMessageOptions.DontRequireReceiver);
 		}
 	}
 	
 	void OnTriggerExit(Collider other)
 	{
-	
+        //Debug.Log ("TriggerBox -- got trigger collision!");
+        if (other.name == VALID_NAME || other.tag == VALID_TAG)
+        {
+            //Debug.Log ("TriggerBox -- got valid collision!");
+            this.gameObject.SendMessageUpwards(FUNCTION_NAME_TO_CALL + "Exit", other, SendMessageOptions.DontRequireReceiver);
+        }
 	}
 }

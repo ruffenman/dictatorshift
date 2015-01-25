@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 [RequireComponent(typeof(CharacterController))]
 public class WorldObject : MonoBehaviour 
@@ -28,6 +29,8 @@ public class WorldObject : MonoBehaviour
 
 	private CharacterController controller;
 	private Vector3 velocity;
+
+    public Action OnDestroyed;
 
 	public void Start()
 	{
@@ -165,4 +168,15 @@ public class WorldObject : MonoBehaviour
 			SetVelocity(newVelocity);
 		}
 	}
+
+    private void OnDestroy()
+    {
+        if(!Application.isEditor)
+        {
+            if(OnDestroyed != null)
+            {
+                OnDestroyed();
+            }
+        }
+    }
 }
