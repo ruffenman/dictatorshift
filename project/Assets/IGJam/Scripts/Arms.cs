@@ -271,6 +271,7 @@ public class Arms : BodyPart
             // RELEASE/THROW OBJECT
             if (isHoldingObject)
             {
+				SoundManager.instance.PlaySfx (SoundManager.SFX_THROW);
                 Debug.Log("Arms.cs -- throw object");
                 heldObject.transform.parent = null;
 
