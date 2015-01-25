@@ -229,7 +229,7 @@ public class IntroManager : MonoBehaviour
 	
 	void HandlePlayerJoined(int player)
 	{
-		SoundManager.instance.PlaySfx (SoundManager.SFX_TELEPORT);
+		SoundManager.instance.PlaySfx (SoundManager.SFX_MENU_SELECT);
 		playersInGame[player] = true;
 		fakePlayerObjects[player].SetActive (true);
 		playerStartPrompts[player].SetActive (false);
