@@ -117,7 +117,7 @@ public class WorldObject : MonoBehaviour
 			Vector3 center = transform.position;
 			center.y -= groundedOffset;
 			float radius = transform.localScale.x / 2;
-			Gizmos.DrawSphere(center, radius);
+			Gizmos.DrawWireSphere(center, radius);
 		}
 	}
 
