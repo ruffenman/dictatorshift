@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class IntroManager : MonoBehaviour 
 {
-	public string SCENE_TO_LOAD_NEXT = "StartScene";
+	public string SCENE_TO_LOAD_NEXT = "UIScreen";
 	float playerFakeGravityY = -3f;
 	//float playerFloorPositionY = -3.44f;
 	//float wallBoundsX = -5.4f;
