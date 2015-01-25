@@ -41,8 +41,8 @@ public class Arms : BodyPart
 	InputState inputState = null;
 	bool initialized = false;
 	
-	Vector2[] armsOffsetsByAngle = new Vector2[(int)ANGLE.COUNT];
-	Vector2[] armsVelocitiesByAngle = new Vector2[(int)ANGLE.COUNT];
+	Vector3[] armsOffsetsByAngle = new Vector3[(int)ANGLE.COUNT];
+	Vector3[] armsVelocitiesByAngle = new Vector3[(int)ANGLE.COUNT];
 
 	public Arms(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 		: base(BodyPart.BodyPartType.ARMS, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
@@ -50,6 +50,7 @@ public class Arms : BodyPart
 		armsColliderObject = new GameObject();
 		armsColliderObject.name = "Arms Collider -- owned by Arms.cs";
 		armsColliderObject.AddComponent<ArmsCollider>();
+		armsColliderObject.layer = newSpriteTransform.gameObject.layer;
 		armsCollider = armsColliderObject.GetComponent<ArmsCollider>();
 		BoxCollider bc = armsColliderObject.AddComponent<BoxCollider>();
 		bc.size = new Vector3(1,1,1);
@@ -60,25 +61,25 @@ public class Arms : BodyPart
 		armsColliderObject.transform.parent = newCombinedPlayer.transform;
 		armsColliderObject.transform.localPosition = new Vector3(0,0,0);
 		
-		armsOffsetsByAngle[(int)ANGLE.NONE] = new Vector2(FRAC,0);
-		armsOffsetsByAngle[(int)ANGLE.UP] = new Vector2(0,FULL);
-		armsOffsetsByAngle[(int)ANGLE.DOWN] = new Vector2(0,-FULL);
-		armsOffsetsByAngle[(int)ANGLE.LEFT] = new Vector2(-FULL,0);
-		armsOffsetsByAngle[(int)ANGLE.RIGHT] = new Vector2(FULL,0);
-		armsOffsetsByAngle[(int)ANGLE.UPLEFT] = new Vector2(-FRAC,FRAC);
-		armsOffsetsByAngle[(int)ANGLE.UPRIGHT] = new Vector2(FRAC,FRAC);
-		armsOffsetsByAngle[(int)ANGLE.DOWNLEFT] = new Vector2(-FRAC,-FRAC);
-		armsOffsetsByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(FRAC,-FRAC);
-		
-		armsVelocitiesByAngle[(int)ANGLE.NONE] = new Vector2(0,0);
-		armsVelocitiesByAngle[(int)ANGLE.UP] = new Vector2(0,FULL);
-		armsVelocitiesByAngle[(int)ANGLE.DOWN] = new Vector2(0,-FULL);
-		armsVelocitiesByAngle[(int)ANGLE.LEFT] = new Vector2(-FULL,0);
-		armsVelocitiesByAngle[(int)ANGLE.RIGHT] = new Vector2(0,FULL);
-		armsVelocitiesByAngle[(int)ANGLE.UPLEFT] = new Vector2(-FRAC,FRAC);
-		armsVelocitiesByAngle[(int)ANGLE.UPRIGHT] = new Vector2(FRAC,FRAC);
-		armsVelocitiesByAngle[(int)ANGLE.DOWNLEFT] = new Vector2(-FRAC,-FRAC);
-		armsVelocitiesByAngle[(int)ANGLE.DOWNRIGHT] = new Vector2(FRAC,-FRAC);
+		armsOffsetsByAngle[(int)ANGLE.NONE] = new Vector3(FRAC,0,0);
+		armsOffsetsByAngle[(int)ANGLE.UP] = new Vector3(0, FULL, 0);
+		armsOffsetsByAngle[(int)ANGLE.DOWN] = new Vector3(0, -FULL, 0);
+		armsOffsetsByAngle[(int)ANGLE.LEFT] = new Vector3(-FULL, 0, 0);
+		armsOffsetsByAngle[(int)ANGLE.RIGHT] = new Vector3(FULL, 0, 0);
+		armsOffsetsByAngle[(int)ANGLE.UPLEFT] = new Vector3(-FRAC, FRAC, 0);
+		armsOffsetsByAngle[(int)ANGLE.UPRIGHT] = new Vector3(FRAC, FRAC, 0);
+		armsOffsetsByAngle[(int)ANGLE.DOWNLEFT] = new Vector3(-FRAC, -FRAC, 0);
+		armsOffsetsByAngle[(int)ANGLE.DOWNRIGHT] = new Vector3(FRAC, -FRAC, 0);
+
+		armsVelocitiesByAngle[(int)ANGLE.NONE] = new Vector3(0, -FULL, 0);
+		armsVelocitiesByAngle[(int)ANGLE.UP] = new Vector3(0, FULL, 0);
+		armsVelocitiesByAngle[(int)ANGLE.DOWN] = new Vector3(0, -FULL, 0);
+		armsVelocitiesByAngle[(int)ANGLE.LEFT] = new Vector3(-FULL, 0, 0);
+		armsVelocitiesByAngle[(int)ANGLE.RIGHT] = new Vector3(FULL, 0, 0);
+		armsVelocitiesByAngle[(int)ANGLE.UPLEFT] = new Vector3(-FRAC, FRAC, 0);
+		armsVelocitiesByAngle[(int)ANGLE.UPRIGHT] = new Vector3(FRAC, FRAC, 0);
+		armsVelocitiesByAngle[(int)ANGLE.DOWNLEFT] = new Vector3(-FRAC, -FRAC, 0);
+		armsVelocitiesByAngle[(int)ANGLE.DOWNRIGHT] = new Vector3(FRAC, -FRAC, 0);
 		
 		inputState = new InputState();
 		initialized = true;
@@ -120,6 +121,7 @@ public class Arms : BodyPart
 				GameObject interactible = armsCollider.GetFirstInteractible();
 				Debug.Log ("Arms.cs -- pick up object");
 				isHoldingObject = true;
+				interactible.GetComponent<WorldObject>().SetPhysicsEnabled(false);
 				heldObject = interactible;
 				heldObject.transform.parent = armsColliderObject.transform;
 				heldObject.transform.localPosition = new Vector3(0,0,0);
@@ -172,6 +174,7 @@ public class Arms : BodyPart
 				heldObject.transform.parent = null;
 				
 				WorldObject obj = heldObject.GetComponent<WorldObject>();
+				obj.SetPhysicsEnabled(true);
 				if(obj != null)
 				{
 					obj.SetVelocity (armsVelocitiesByAngle[(int)inputState.inputAngle] * THROW_MULTIPLIER);
@@ -219,7 +222,7 @@ public class Arms : BodyPart
 			case(IGJInputManager.InputDirection.UpRight): inputState.inputAngle = ANGLE.UPRIGHT; break;
 			case(IGJInputManager.InputDirection.DownLeft): inputState.inputAngle = ANGLE.DOWNLEFT; break;
 			case(IGJInputManager.InputDirection.DownRight): inputState.inputAngle = ANGLE.DOWNRIGHT; break;
-			default: inputState.inputAngle = ANGLE.NONE; break;
+			default: /*inputState.inputAngle = ANGLE.NONE;*/ break;
 		}
 		
 		if (inputState.inputAngle != old)

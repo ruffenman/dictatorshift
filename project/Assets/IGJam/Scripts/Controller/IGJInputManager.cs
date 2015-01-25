@@ -23,6 +23,11 @@ public class IGJInputManager : MonoBehaviour
         Left,
         UpLeft,
     }
+
+	public float upBoundsAngle = (3f / 8f);
+	public float rightBoundsAngle = (5f / 8f);
+	public float leftBoundsAngle = (1f / 8f);
+	public float downBoundsAngle = (15f / 8f);
     
 	// Use this for initialization
 	private void Start () {
@@ -46,19 +51,19 @@ public class IGJInputManager : MonoBehaviour
         bool p1_actionJustPressed = Input.GetButtonDown(P1_ACTION);
 
         Vector3 p1_dirVec = Vector3.zero;
-        if(p1_x > Mathf.Cos(3 * Mathf.PI / 8))
+        if(p1_x > Mathf.Cos(upBoundsAngle * Mathf.PI))
         {
             p1_dirVec.x = 1;
         }
-        else if (p1_x < Mathf.Cos(5 * Mathf.PI / 8))
+        else if (p1_x < Mathf.Cos(rightBoundsAngle * Mathf.PI))
         {
             p1_dirVec.x = -1;
         }
-        if (p1_y > Mathf.Sin(1 * Mathf.PI / 8))
+        if (p1_y > Mathf.Sin(leftBoundsAngle * Mathf.PI))
         {
             p1_dirVec.y = 1;
         }
-        else if (p1_y < Mathf.Sin(15 * Mathf.PI / 8))
+        else if (p1_y < Mathf.Sin(downBoundsAngle * Mathf.PI))
         {
             p1_dirVec.y = -1;
         }
@@ -127,19 +132,19 @@ public class IGJInputManager : MonoBehaviour
         bool p2_actionJustPressed = Input.GetButtonDown(P2_ACTION);
 
         Vector3 p2_dirVec = Vector3.zero;
-        if (p2_x > Mathf.Cos(3 * Mathf.PI / 8))
+        if (p2_x > Mathf.Cos(upBoundsAngle * Mathf.PI))
         {
             p2_dirVec.x = 1;
         }
-        else if (p2_x < Mathf.Cos(5 * Mathf.PI / 8))
+        else if (p2_x < Mathf.Cos(rightBoundsAngle * Mathf.PI))
         {
             p2_dirVec.x = -1;
         }
-        if (p2_y > Mathf.Sin(1 * Mathf.PI / 8))
+        if (p2_y > Mathf.Sin(leftBoundsAngle * Mathf.PI))
         {
             p2_dirVec.y = 1;
         }
-        else if (p2_y < Mathf.Sin(15 * Mathf.PI / 8))
+        else if (p2_y < Mathf.Sin(downBoundsAngle * Mathf.PI))
         {
             p2_dirVec.y = -1;
         }
@@ -208,19 +213,19 @@ public class IGJInputManager : MonoBehaviour
         bool p3_actionJustPressed = Input.GetButtonDown(P3_ACTION);
 
         Vector3 p3_dirVec = Vector3.zero;
-        if (p3_x > Mathf.Cos(3 * Mathf.PI / 8))
+        if (p3_x > Mathf.Cos(upBoundsAngle * Mathf.PI))
         {
             p3_dirVec.x = 1;
         }
-        else if (p3_x < Mathf.Cos(5 * Mathf.PI / 8))
+        else if (p3_x < Mathf.Cos(rightBoundsAngle * Mathf.PI))
         {
             p3_dirVec.x = -1;
         }
-        if (p3_y > Mathf.Sin(1 * Mathf.PI / 8))
+        if (p3_y > Mathf.Sin(leftBoundsAngle * Mathf.PI))
         {
             p3_dirVec.y = 1;
         }
-        else if (p3_y < Mathf.Sin(15 * Mathf.PI / 8))
+        else if (p3_y < Mathf.Sin(downBoundsAngle * Mathf.PI))
         {
             p3_dirVec.y = -1;
         }
@@ -289,19 +294,19 @@ public class IGJInputManager : MonoBehaviour
         bool p4_actionJustPressed = Input.GetButtonDown(P4_ACTION);
 
         Vector3 p4_dirVec = Vector3.zero;
-        if (p4_x > Mathf.Cos(3 * Mathf.PI / 8))
+        if (p4_x > Mathf.Cos(upBoundsAngle * Mathf.PI))
         {
             p4_dirVec.x = 1;
         }
-        else if (p4_x < Mathf.Cos(5 * Mathf.PI / 8))
+        else if (p4_x < Mathf.Cos(rightBoundsAngle * Mathf.PI))
         {
             p4_dirVec.x = -1;
         }
-        if (p4_y > Mathf.Sin(1 * Mathf.PI / 8))
+        if (p4_y > Mathf.Sin(leftBoundsAngle * Mathf.PI))
         {
             p4_dirVec.y = 1;
         }
-        else if (p4_y < Mathf.Sin(15 * Mathf.PI / 8))
+        else if (p4_y < Mathf.Sin(downBoundsAngle * Mathf.PI))
         {
             p4_dirVec.y = -1;
         }
@@ -358,7 +363,7 @@ public class IGJInputManager : MonoBehaviour
 
         if (p4_inputVec.sqrMagnitude > 0 || p4_dirVec.sqrMagnitude > 0 || p4_actionPressed || p4_actionJustPressed)
         {
-            Debug.Log("\tp4_input_vec: " + p4_inputVec + "\tp4_dir: " + p4_dirVec + "\tp4_actionPressed: " + p4_actionPressed + "\tp4_actionJustPressed: " + p4_actionJustPressed);
+            //Debug.Log("\tp4_input_vec: " + p4_inputVec + "\tp4_dir: " + p4_dirVec + "\tp4_actionPressed: " + p4_actionPressed + "\tp4_actionJustPressed: " + p4_actionJustPressed);
         }
 
         CombinedPlayer player = JamGame.instance.player;

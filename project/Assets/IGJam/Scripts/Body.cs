@@ -5,9 +5,11 @@ public class Body : BodyPart
 {
 	//properties
 	private float thrustSpeed = 10f;
-	private float cooldownTime = 1f;
+	private float cooldownTime = 0.5f;
 	private float speedDepreciation = 0.9f;
 	private float stopSpeedSquared = 2;
+	private float horizontalModifier = 2;
+	private float verticalModifier = 1;
 
 	// utility
 	private bool canThrust;
@@ -26,7 +28,7 @@ public class Body : BodyPart
 		UpdateCooldownTimer();
 		if (bodyVelocity != Vector3.zero)
 		{
-			//Debug.Log("Adding jump"/*"Current velocity : " + combinedPlayer.GetVelocity()*/);
+			Debug.Log("Current velocity : " + combinedPlayer.GetVelocity());
 			combinedPlayer.AddVelocity(bodyVelocity);
 			if (bodyVelocity.sqrMagnitude > stopSpeedSquared)
 			{
@@ -73,9 +75,16 @@ public class Body : BodyPart
 		if (canThrust)
 		{
 			// and received button press and direction
-			if (lastInputState.actionJustPressed && (lastInputState.directionVec != Vector3.zero))
+			if (lastInputState.actionJustPressed)
 			{
-				bodyVelocity += lastInputState.directionVec * thrustSpeed;
+				if (lastInputState.directionVec != Vector3.zero)
+				{
+					bodyVelocity += new Vector3(lastInputState.directionVec.x * horizontalModifier, lastInputState.directionVec.y * verticalModifier, lastInputState.directionVec.z) * thrustSpeed;
+				}
+				else
+				{
+					bodyVelocity.y += thrustSpeed;
+				}
 				EnterCooldown();
 			}
 		}
