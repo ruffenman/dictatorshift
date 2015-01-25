@@ -32,6 +32,7 @@ public class Arms : BodyPart
 	bool initialized = false;
     IGJInputManager.InputDirection lastDirection;
     Animator animator = null;
+    private bool isFacingLeft = false;
 
     Vector3[] armsOffsetsByDir = new Vector3[(int)IGJInputManager.InputDirection.Max];
     Vector3[] armsVelocitiesByDir = new Vector3[(int)IGJInputManager.InputDirection.Max];
@@ -80,6 +81,21 @@ public class Arms : BodyPart
         lastDirection = IGJInputManager.InputDirection.None;
 	}
 
+    public override void Update()
+    {
+        // Update facing direction
+        if((combinedPlayer.GetBodyPart(BodyPartType.BODY) as Body).isFacingLeft)
+        {
+            spriteTransform.localScale = new Vector3(-1, 1, 1);
+            isFacingLeft = true;
+        }
+        else
+        {
+            spriteTransform.localScale = new Vector3(1, 1, 1);
+            isFacingLeft = false;
+        }
+    }
+
     protected override void OnInputReceived()
     {
         if (!initialized)
@@ -92,7 +108,45 @@ public class Arms : BodyPart
         {
             armsColliderObject.transform.localPosition = armsOffsetsByDir[(int)lastInputState.direction];
 
-            switch(lastInputState.direction)
+            // Handle facing direction
+            IGJInputManager.InputDirection directionAfterFacingFlipping = lastInputState.direction;
+            if (isFacingLeft)
+            {
+                switch (directionAfterFacingFlipping)
+                {
+                    case IGJInputManager.InputDirection.UpRight:
+                        {
+                            directionAfterFacingFlipping = IGJInputManager.InputDirection.UpLeft;
+                        } break;
+
+                    case IGJInputManager.InputDirection.Right:
+                        {
+                            directionAfterFacingFlipping = IGJInputManager.InputDirection.Left;
+                        } break;
+
+                    case IGJInputManager.InputDirection.DownRight:
+                        {
+                            directionAfterFacingFlipping = IGJInputManager.InputDirection.DownLeft;
+                        } break;
+
+                    case IGJInputManager.InputDirection.DownLeft:
+                        {
+                            directionAfterFacingFlipping = IGJInputManager.InputDirection.DownRight;
+                        } break;
+
+                    case IGJInputManager.InputDirection.Left:
+                        {
+                            directionAfterFacingFlipping = IGJInputManager.InputDirection.Right;
+                        } break;
+
+                    case IGJInputManager.InputDirection.UpLeft:
+                        {
+                            directionAfterFacingFlipping = IGJInputManager.InputDirection.UpRight;
+                        } break;
+                }
+            }
+
+            switch (directionAfterFacingFlipping)
             {
                 case IGJInputManager.InputDirection.None:
                 {
@@ -230,6 +284,8 @@ public class Arms : BodyPart
                 {
                     Debug.LogWarning("Arms.cs -- no WorldObject script on held object!");
                 }
+
+                JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_THROW);
 
                 isHoldingObject = false;
             }

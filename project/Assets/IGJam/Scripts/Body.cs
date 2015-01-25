@@ -16,6 +16,8 @@ public class Body : BodyPart
 	private float cooldownTimer;
 	private Vector3 bodyVelocity;
 
+    public bool isFacingLeft = false;
+
 	// constructor
 	public Body(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 		: base(BodyPart.BodyPartType.BODY, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
@@ -70,6 +72,25 @@ public class Body : BodyPart
 
 	protected override void OnInputReceived()
 	{
+        switch(lastInputState.direction)
+        {
+            case IGJInputManager.InputDirection.UpRight:
+            case IGJInputManager.InputDirection.Right:
+            case IGJInputManager.InputDirection.DownRight:
+            {
+                isFacingLeft = false;
+                spriteTransform.localScale = new Vector3(1, 1, 1);
+            } break;
+
+            case IGJInputManager.InputDirection.UpLeft:
+            case IGJInputManager.InputDirection.Left:
+            case IGJInputManager.InputDirection.DownLeft:
+            {
+                isFacingLeft = true;
+                spriteTransform.localScale = new Vector3(-1, 1, 1);
+            } break;
+        }
+
 		// if not in cooldown
 		if (canThrust)
 		{

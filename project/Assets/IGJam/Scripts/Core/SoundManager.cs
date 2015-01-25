@@ -20,6 +20,7 @@ public class SoundManager : MonoBehaviour
     public const string SFX_MENU_CURSOR = "MenuCursor";
     public const string SFX_SHOOT = "Shoot";
     public const string SFX_TELEPORT = "Teleport";
+    public const string SFX_THROW = "Throw";
 
     public void PlayMusic(string name)
     {
