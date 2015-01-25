@@ -31,6 +31,11 @@ public class TeleporterSwitch : MonoBehaviour
         WorldObject worldObject = other.GetComponent<WorldObject>();
         if (worldObject && worldObject.objectType == WorldObject.ObjectType.INTERACTIVE)
         {
+            if(!isOn)
+            {
+                JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_DROP_SWITCH);
+            }
+
             triggererCount++;
             teleporterToControl.isActive = true;
             isOn = true;
@@ -47,6 +52,11 @@ public class TeleporterSwitch : MonoBehaviour
             worldObject.OnDestroyed -= OnTriggererDestroyed;
             if (triggererCount == 0)
             {
+                if (isOn)
+                {
+                    JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_DROP_SWITCH);
+                }
+
                 teleporterToControl.isActive = false;
                 isOn = false;
             }
@@ -58,8 +68,13 @@ public class TeleporterSwitch : MonoBehaviour
         triggererCount = Mathf.Max(0, --triggererCount); 
         if (triggererCount == 0)
         {
-            teleporterToControl.isActive = true;
-            isOn = true;
+            if (isOn)
+            {
+                JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_DROP_SWITCH);
+            }
+
+            teleporterToControl.isActive = false;
+            isOn = false;
         }
     }
 }
