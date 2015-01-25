@@ -27,6 +27,7 @@ public class Sheep : DeadlyObject
 	private Animator animator;
 	private bool dead = false;
 	private bool stopped = false;
+	private GameObject target;
 
 	void OnDrawGizmos()
 	{
@@ -54,7 +55,7 @@ public class Sheep : DeadlyObject
 			List<GameObject> found = LookAhead();
 			float speed = 0;
 			Vector3 direction = facingLeft ? Vector3.left : Vector3.right;
-			GameObject target = null;
+			target = null;
 
 			// if something in your way
 			if (found != null)
