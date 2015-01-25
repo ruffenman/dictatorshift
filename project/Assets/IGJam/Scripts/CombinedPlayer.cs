@@ -111,7 +111,7 @@ public class CombinedPlayer : WorldObject
 
 	protected override void UpdateInternal()
 	{
-		if(Input.GetKeyDown (KeyCode.D))
+		if(Input.GetKeyDown (KeyCode.D) || transform.position.y < -7.5)
 		{
 			Die ();
 		}
