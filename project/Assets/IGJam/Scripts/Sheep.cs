@@ -14,12 +14,15 @@ public class Sheep : DeadlyObject
 	public float jogSpeed = 2f;
 	public float runSpeed = 3f;
 	public float jumpSpeed = 10f;
+	public float explosionTime = 0.43f;
 
 	// utility
 	private Vector3 startingPosition;
 	private float leftBound;
 	private float rightBound;
 	private bool facingLeft;
+	private Animator animator;
+	private bool dead = false;
 
 	void OnDrawGizmos()
 	{
@@ -37,89 +40,120 @@ public class Sheep : DeadlyObject
 		base.Start();
 		leftBound = transform.position.x - walkRange / 2;
 		rightBound = transform.position.x + walkRange / 2;
+		animator = GetComponent<Animator>();
 	}
 
 	protected override void UpdateInternal() 
 	{
-		List<GameObject> found = LookAhead();
-		float speed = 0;
-		Vector3 direction = facingLeft ? Vector3.left : Vector3.right;
-		GameObject target = null;
-
-		// if something in your way
-		if (found != null)
+		if (!dead)
 		{
-			GameObject closest = null;
-			float closestDistance = float.MaxValue;
+			List<GameObject> found = LookAhead();
+			float speed = 0;
+			Vector3 direction = facingLeft ? Vector3.left : Vector3.right;
+			GameObject target = null;
 
-			// determine target
-			foreach (GameObject go in found)
+			// if something in your way
+			if (found != null)
 			{
-				CombinedPlayer player = go.GetComponent<CombinedPlayer>();
-				if (player != null)
+				GameObject closest = null;
+				float closestDistance = float.MaxValue;
+
+				// determine target
+				foreach (GameObject go in found)
 				{
-					target = go;
+					CombinedPlayer player = go.GetComponent<CombinedPlayer>();
+					if (player != null)
+					{
+						target = go;
+					}
+					float distance = (go.transform.position - transform.position).sqrMagnitude;
+					if (distance < closestDistance)
+					{
+						closestDistance = distance;
+						closest = go;
+					}
 				}
-				float distance = (go.transform.position - transform.position).sqrMagnitude;
-				if (distance < closestDistance)
+
+				// if something is in your way and in jump range
+				if ((closest != target) && (closestDistance <= (closeEnoughToJumpDistance * closeEnoughToJumpDistance)))
 				{
-					closestDistance = distance;
-					closest = go;
+					// jump
+					if (grounded)
+					{
+						Jump();
+					}
+				}
+
+				// if there's a target
+				if (target != null)
+				{
+					direction = (target.transform.position.x < transform.position.x) ? Vector3.left : Vector3.right;
+
+					// if in run range
+					float distance = (target.transform.position - transform.position).sqrMagnitude;
+					if (distance <= (closeEnoughToRunDistance * closeEnoughToRunDistance))
+					{
+						// run toward them
+						speed = runSpeed;
+
+					}
+					else
+					{
+						// jog toward them
+						speed = jogSpeed;
+					}
 				}
 			}
 
-			// if something is in your way and in jump range
-			if ((closest != target) && (closestDistance <= (closeEnoughToJumpDistance * closeEnoughToJumpDistance)))
+			if (target == null)
 			{
-				// jump
-				Jump();
-			}
+				// follow path at walk speed
+				speed = walkSpeed;
 
-			// if there's a target
-			if (target != null)
-			{
-				direction = (target.transform.position.x < transform.position.x) ? Vector3.left : Vector3.right;
-
-				// if in run range
-				float distance = (target.transform.position - transform.position).sqrMagnitude;
-				if (distance <= (closeEnoughToRunDistance * closeEnoughToRunDistance))
+				if (((transform.position.x < leftBound) && facingLeft) || ((transform.position.x > rightBound) && !facingLeft))
 				{
-					// run toward them
-					speed = runSpeed;
+					TurnAround();
+					direction = -direction;
 				}
-				else
+
+				if (grounded)
 				{
-					// jog toward them
-					speed = jogSpeed;
+					animator.Play("Walk");
 				}
 			}
+
+			// animation
+			string animState = "Walk";
+			if (!grounded || (speed == jogSpeed))
+			{
+				animState = "Hop";
+			}
+			else if (speed == runSpeed)
+			{
+				animState = "Run";
+			}
+			else if (speed == 0)
+			{
+				animState = "Idle";
+			}
+			animator.Play(animState);
+
+			AddVelocity(direction * speed);
+
+			base.UpdateInternal();
 		}
-
-		if(target == null)
-		{
-			// follow path at walk speed
-			speed = walkSpeed;
-
-			if (((transform.position.x < leftBound) && facingLeft) || ((transform.position.x > rightBound) && !facingLeft))
-			{
-				TurnAround();
-				direction = -direction;
-			}
-		}
-
-		AddVelocity(direction * speed);
-
-		base.UpdateInternal();
 	}
 
 	void Jump()
 	{
-		AddVelocity(Vector3.up * jumpSpeed);
+		Vector3 direction = facingLeft ? Vector3.left : Vector3.right;
+		AddVelocity((Vector3.up * jumpSpeed) + (direction * jumpSpeed / 2));
 	}
 
 	void TurnAround()
 	{
 		facingLeft = !facingLeft;
+		transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 	}
 
 	List<GameObject> LookAhead()
@@ -149,5 +183,25 @@ public class Sheep : DeadlyObject
 			return allFound;
 		}
 		return null;
+	}
+
+	public override void OnCollideWithTarget(GameObject target)
+	{
+		WorldObject worldObject = target.GetComponent<WorldObject>();
+		if (worldObject != null)
+		{
+			worldObject.TakeDamage(damage);
+			if (destroyOnCollision)
+			{
+				animator.Play("Explode");
+				dead = true;
+				StartCoroutine(Utility.Delay(explosionTime, CompleteDestruction));
+			}
+		}
+	}
+
+	private void CompleteDestruction()
+	{
+		Destroy(gameObject);
 	}
 }

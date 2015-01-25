@@ -6,6 +6,7 @@ public class CombinedPlayer : WorldObject
 	//properties
     public GameObject lazerPrefab;
 	private float respawnDelay = 0.5f;
+	private float respawnMoveTime = 0.15f;
 
 	// utility
 	BodyPart[] bodyParts;
@@ -94,11 +95,16 @@ public class CombinedPlayer : WorldObject
 	{
 		dead = true;
 		SetVisible(false);
-		transform.position = lastRespawnPoint.position;
 		StartCoroutine(Utility.Delay(respawnDelay, Respawn));
 	}
 
 	void Respawn()
+	{
+		transform.position = lastRespawnPoint.position;
+		StartCoroutine(Utility.Delay(respawnMoveTime, MakeAlive));
+	}
+
+	void MakeAlive()
 	{
 		dead = false;
 		SetVisible(true);

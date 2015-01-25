@@ -4,9 +4,9 @@ using System.Collections;
 public class DeadlyObject : WorldObject 
 {
 	public bool destroyOnCollision = false;
-	float damage = 100.0f;
+	protected float damage = 100.0f;
 
-	public void OnCollideWithTarget(GameObject target)
+	public virtual void OnCollideWithTarget(GameObject target)
 	{
 		WorldObject worldObject = target.GetComponent<WorldObject>();
 		if (worldObject != null)
@@ -17,5 +17,9 @@ public class DeadlyObject : WorldObject
 				Destroy(gameObject);
 			}
 		}
+	}
+
+	protected virtual void OnDestroyed()
+	{
 	}
 }

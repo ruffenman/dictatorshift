@@ -54,8 +54,8 @@ public class WorldObject : MonoBehaviour
 		if ((objectType == ObjectType.INTERACTIVE) && (physicsEnabled))
 		{
 			Move();
+			UpdateGrounded();
 		}
-		UpdateGrounded();
 	}
 
 	public void TakeDamage(float damage)
@@ -110,13 +110,16 @@ public class WorldObject : MonoBehaviour
 		grounded = Physics.CheckSphere(center, radius, groundedLayerMask);
 	}
 
-	/*void OnDrawGizmos()
+	void OnDrawGizmos()
 	{
-		Vector3 center = transform.position;
-		center.y -= groundedOffset;
-		float radius = transform.localScale.x / 2;
-		Gizmos.DrawSphere(center, radius);
-	}*/
+		if (objectType == ObjectType.INTERACTIVE)
+		{
+			Vector3 center = transform.position;
+			center.y -= groundedOffset;
+			float radius = transform.localScale.x / 2;
+			Gizmos.DrawSphere(center, radius);
+		}
+	}
 
 	void Move()
 	{
