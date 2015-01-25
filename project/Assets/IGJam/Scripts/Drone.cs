@@ -82,7 +82,9 @@ public class Drone : DeadlyObject
 			{
 				animator.Play("Explode");
 				dead = true;
-				StartCoroutine(Utility.Delay(explosionTime, CompleteDestruction));
+                StartCoroutine(Utility.Delay(explosionTime, CompleteDestruction));
+
+                JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_EXPLOSION);
 			}
 		}
 	}

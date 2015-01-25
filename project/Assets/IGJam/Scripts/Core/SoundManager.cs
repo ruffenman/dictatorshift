@@ -23,6 +23,10 @@ public class SoundManager : MonoBehaviour
     public const string SFX_SHOOT = "Shoot";
     public const string SFX_TELEPORT = "Teleport";
     public const string SFX_THROW = "Throw";
+    public const string SFX_DROP_SWITCH = "DropSwitch";
+    public const string SFX_SHEEP = "Sheep";
+    public const string SFX_SAW = "Saw";
+    public const string SFX_MENU_SELECT = "MenuSelect";
 
     public void PlayMusic(string name)
     {

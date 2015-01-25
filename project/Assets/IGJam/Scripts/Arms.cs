@@ -112,7 +112,7 @@ public class Arms : BodyPart
             IGJInputManager.InputDirection directionAfterFacingFlipping = lastInputState.direction;
             if (isFacingLeft)
             {
-                switch (directionAfterFacingFlipping)
+                switch (lastInputState.direction)
                 {
                     case IGJInputManager.InputDirection.UpRight:
                         {
@@ -223,6 +223,8 @@ public class Arms : BodyPart
 				{
 					deadlyObj.Defang();
 				}
+
+                JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_GET_HIT);
             }
             // START FLAILING
             else

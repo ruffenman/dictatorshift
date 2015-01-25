@@ -30,6 +30,7 @@ public class SmallTeleporter : MonoBehaviour
         {
             // YOU WINNN!
             JamGame.instance.player.ShuffleInputs();
+            JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_TELEPORT);
         }
     }
 }

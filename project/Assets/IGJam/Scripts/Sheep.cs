@@ -68,6 +68,10 @@ public class Sheep : DeadlyObject
 				{
 					if (go.CompareTag("Player"))
 					{
+                        if(!target)
+                        {
+                            //JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_SHEEP);
+                        }
 						target = go;
 					}
 					float distance = (go.transform.position - transform.position).sqrMagnitude;
@@ -148,7 +152,7 @@ public class Sheep : DeadlyObject
 	{
 		Vector3 direction = facingLeft ? Vector3.left : Vector3.right;
 		float ratio = GetVelocity().x / perfectSpeedForJump;
-		AddVelocity(((Vector3.up * jumpSpeed) + (direction * jumpSpeed / 3)) * ratio);
+        AddVelocity(((Vector3.up * jumpSpeed) + (direction * jumpSpeed / 3)) * ratio);
 	}
 
 	void Stop()
@@ -220,6 +224,8 @@ public class Sheep : DeadlyObject
 				animator.Play("Explode");
 				dead = true;
 				StartCoroutine(Utility.Delay(explosionTime, CompleteDestruction));
+
+                JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_EXPLOSION);
 			}
 		}
 	}

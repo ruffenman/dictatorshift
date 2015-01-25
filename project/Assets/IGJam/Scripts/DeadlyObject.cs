@@ -19,6 +19,8 @@ public class DeadlyObject : WorldObject
 			if(destroyOnCollision)
 			{
 				Destroy(gameObject);
+
+                JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_SAW);
 			}
 		}
 	}
