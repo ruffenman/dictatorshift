@@ -105,13 +105,19 @@ public class WorldObject : MonoBehaviour
 	{
 		if (deathParticles)
 		{
+            foreach(SpriteRenderer sprite in GetComponentsInChildren<SpriteRenderer>())
+            {
+                sprite.color = Color.clear;
+            }
 			deathParticles.particleSystem.Play();
 			StartCoroutine(Utility.Delay(deathParticles.particleSystem.duration + deathParticles.particleSystem.startLifetime, FinishDestroy));
 		}
 		else
 		{
 			FinishDestroy();
-		}
+        }
+
+        JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_BREAK);
 	}
 
 	protected void FinishDestroy()
