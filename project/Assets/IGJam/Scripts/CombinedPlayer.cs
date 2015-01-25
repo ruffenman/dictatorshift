@@ -110,6 +110,10 @@ public class CombinedPlayer : WorldObject
 
 	protected override void UpdateInternal()
 	{
+		if(Input.GetKeyDown (KeyCode.D))
+		{
+			Die ();
+		}
 		if (!dead)
 		{
 			base.UpdateInternal();
