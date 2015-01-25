@@ -7,6 +7,7 @@ public class DisplayScreen : MonoBehaviour
 	private float timer = -1;
 	public bool winScreen = false;
 	private bool showing = false;
+	public GameObject teleporter;
 
 	Vector3 firstPosition;
 
@@ -32,11 +33,24 @@ public class DisplayScreen : MonoBehaviour
 
 	public void Show()
 	{
-		firstPosition = transform.position;
-		timer = duration;
-		renderer.enabled = true;
-		transform.parent = Camera.main.transform;
-		transform.localPosition = new Vector3(0,0,10);
-		showing = true;
+		bool canShow = true;
+		if (teleporter != null)
+		{
+			SmallTeleporter st = teleporter.GetComponent<SmallTeleporter>();
+			if (st)
+			{
+				canShow = st.isActive;
+			}
+		}
+
+		if (canShow)
+		{
+			firstPosition = transform.position;
+			timer = duration;
+			renderer.enabled = true;
+			transform.parent = Camera.main.transform;
+			transform.localPosition = new Vector3(0, 0, 10);
+			showing = true;
+		}
 	}
 }
