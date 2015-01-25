@@ -14,6 +14,9 @@ public class CombinedPlayer : WorldObject
 	bool dead;
 	Transform lastRespawnPoint;
 
+    // this is a debub value to be taken out later
+    private int debugGetInput;
+
     public BodyPart GetBodyPart(BodyPart.BodyPartType partType)
     {
         return bodyParts[(int)partType];
@@ -26,7 +29,22 @@ public class CombinedPlayer : WorldObject
         {
             bodyParts[i].ReceiveInput(inputStates[i]);
         }
-        //bodyParts[(int)BodyPart.BodyPartType.LEGS].ReceiveInput(inputStates[0]);
+/*
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            //increment the current body part to get input
+            debugGetInput++;
+            debugGetInput %= (int)BodyPart.BodyPartType.MAX;
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            // decrement the current body part to get input
+            debugGetInput--;
+            debugGetInput %= (int)BodyPart.BodyPartType.MAX;
+        }
+
+        bodyParts[debugGetInput].ReceiveInput(inputStates[0]);
+*/
     }
 
 	new void Start ()
@@ -58,6 +76,8 @@ public class CombinedPlayer : WorldObject
         bodyParts[(int)BodyPart.BodyPartType.BODY] = new Body(1, bodyPartTransforms[(int)BodyPart.BodyPartType.BODY], this);
         bodyParts[(int)BodyPart.BodyPartType.ARMS] = new Arms(2, bodyPartTransforms[(int)BodyPart.BodyPartType.ARMS], this);
         bodyParts[(int)BodyPart.BodyPartType.LEGS] = new Legs(3, bodyPartTransforms[(int)BodyPart.BodyPartType.LEGS], this);
+
+        debugGetInput = (int)BodyPart.BodyPartType.HEAD;
 	}
 
 	public override void Update()
