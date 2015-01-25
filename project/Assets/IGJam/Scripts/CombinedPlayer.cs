@@ -32,6 +32,7 @@ public class CombinedPlayer : WorldObject
 
     public void ReceiveInput(IGJInputManager.InputState[] inputStates)
     {
+        /*
         if (JamGame.instance.debugBodyPartSwitching)
         {
             if (Input.GetKeyDown(KeyCode.W))
@@ -50,16 +51,16 @@ public class CombinedPlayer : WorldObject
         }
         else
         {
+         * */
             if (Input.GetKeyDown(KeyCode.RightShift))
             {
                 ShuffleInputs();
             }
-
             for (int i = 0; i < inputStates.Length; ++i)
             {
                 bodyParts[playerToBodyMapping[i]].ReceiveInput(inputStates[i]);
             }
-        }
+        //}
     }
 
     public void ShuffleInputs()
