@@ -4,6 +4,8 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class WorldObject : MonoBehaviour 
 {
+	static readonly float gravity = 5f;
+
 	public enum ObjectType
 	{
 		INTERACTIVE,
@@ -13,13 +15,17 @@ public class WorldObject : MonoBehaviour
 	// properties
 	public ObjectType objectType;
 	public float moveDepreciation = 0.9f;
-    public float stopVelocity = 1.0f;
-    public float gravity = 2f;
+	public float stopVelocity = 1.0f;
+	public float groundedOffset = 0.5f;
+	public LayerMask groundedLayerMask;
 
 	// utility
-	private float health = 100;
-	CharacterController controller;
-	Vector3 velocity;
+	protected bool grounded;
+	protected float health = 100;
+	private bool physicsEnabled = true;
+
+	private CharacterController controller;
+	private Vector3 velocity;
 
 	public void Start()
 	{
@@ -28,10 +34,11 @@ public class WorldObject : MonoBehaviour
 
 	public virtual void Update()
 	{
-		if (objectType == ObjectType.INTERACTIVE)
+		if ((objectType == ObjectType.INTERACTIVE) && (physicsEnabled))
 		{
 			Move();
 		}
+		UpdateGrounded();
 	}
 
 	public void TakeDamage(float damage)
@@ -41,6 +48,18 @@ public class WorldObject : MonoBehaviour
 			health = Mathf.Max(0, health - damage);
 			UpdateHealth();
 		}
+	}
+
+	public Vector3 GetVelocity()
+	{
+		return velocity;
+	}
+
+	public void SetPhysicsEnabled(bool enabled)
+	{
+		physicsEnabled = enabled;
+		collider.enabled = enabled;
+		controller.enabled = enabled;
 	}
 
 	public void AddVelocity(Vector3 addedVelocity)
@@ -66,14 +85,30 @@ public class WorldObject : MonoBehaviour
 		Destroy(gameObject);
 	}
 
+	void UpdateGrounded()
+	{
+		Vector3 center = transform.position;
+		center.y -= groundedOffset;
+		float radius = transform.localScale.x / 2;
+		grounded = Physics.CheckSphere(center, radius, groundedLayerMask);
+	}
+
+	/*void OnDrawGizmos()
+	{
+		Vector3 center = transform.position;
+		center.y -= groundedOffset;
+		float radius = transform.localScale.x / 2;
+		Gizmos.DrawSphere(center, radius);
+	}*/
+
 	void Move()
 	{
-		if ((velocity != Vector3.zero) || !controller.isGrounded)
+		if ((velocity.sqrMagnitude > 0) || (!grounded))
 		{
 			Vector3 newVelocity = velocity;
 
 			// gravity
-			if (controller.isGrounded)
+			if (grounded && (newVelocity.y < 0))
 			{
 				newVelocity.y = 0;
 			}
@@ -92,7 +127,7 @@ public class WorldObject : MonoBehaviour
 				newVelocity.x = 0;
 			}
 
-			controller.Move(newVelocity * Time.deltaTime);
+			controller.Move((newVelocity + new Vector3(0.0001f, 0, 0)) * Time.deltaTime);
 			SetVelocity(newVelocity);
 		}
 	}
