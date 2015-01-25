@@ -13,8 +13,7 @@ public class Lazer : WorldObject
 
     public const float mLazerSpeed = 100.0f;
     public const float mLazerLength = 100.0f;
-    public const float mLazerTimer = 3.0f;
-    public float mLazerCurrentTimer = 3.0f;
+    public const float mLazerTimer = 1.35f;
     Vector3 mPowerSizeScale = new Vector3(0.5f, 0.0f, 0.0f);
 
     private PowerLevel mPowerLevel = PowerLevel.None;
@@ -27,6 +26,7 @@ public class Lazer : WorldObject
     private Transform mMiddleSection = null;
     private Transform mEndSection = null;
     private Transform mPlayerHead = null;
+    public float mLazerCurrentTimer;
 
 	// Use this for initialization
     new void Start()
@@ -116,7 +116,7 @@ public class Lazer : WorldObject
         mMiddleSection.localScale += new Vector3(0.0f, sizeIncrease * 2.0f * mLazerSpeed, 0.0f);
         mEndSection.localPosition += new Vector3(sizeIncrease * 2.0f * mLazerSpeed, 0.0f, 0.0f);
 
-        if (mMiddleSection.localScale.y >= mLazerLength || mPowerLevel == PowerLevel.None || mLazerTimer < 0)
+        if (mLazerCurrentTimer < 0 || mPowerLevel == PowerLevel.None)
         {
             Destroy(gameObject);
         }
