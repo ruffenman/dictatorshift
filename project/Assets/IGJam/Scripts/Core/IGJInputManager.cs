@@ -131,12 +131,12 @@ public class IGJInputManager : MonoBehaviour
             if (inputVec.sqrMagnitude > 0 || dirVec.sqrMagnitude > 0 || actionPressed || actionJustPressed || actionJustReleased)
             {
                 int playerIndex = Array.IndexOf(inputStates, inputState) + 1;
-                Debug.Log("\tp" + playerIndex + "_input_vec: " + inputVec + 
-                    "\tp" + playerIndex + "_dir: " + dirVec + 
-                    "\tp" + playerIndex + "_direction: " + direction + 
-                    "\tp" + playerIndex + "_actionPressed: " + actionPressed + 
-                    "\tp" + playerIndex + "_actionJustPressed: " + actionJustPressed + 
-                    "\tp" + playerIndex + "_actionJustReleased: " + actionJustReleased);
+				//Debug.Log("\tp" + playerIndex + "_input_vec: " + inputVec + 
+				//	"\tp" + playerIndex + "_dir: " + dirVec + 
+				//	"\tp" + playerIndex + "_direction: " + direction + 
+				//	"\tp" + playerIndex + "_actionPressed: " + actionPressed + 
+				//	"\tp" + playerIndex + "_actionJustPressed: " + actionJustPressed + 
+				//	"\tp" + playerIndex + "_actionJustReleased: " + actionJustReleased);
             }
         };
 
