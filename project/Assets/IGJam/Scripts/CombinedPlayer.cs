@@ -30,27 +30,30 @@ public class CombinedPlayer : WorldObject
 
     public void ReceiveInput(IGJInputManager.InputState[] inputStates)
     {
-        // TODO: Mess with player -> body assignments
-        for (int i = 0; i < inputStates.Length; ++i)
+        if (JamGame.instance.debugBodyPartSwitching)
         {
-            bodyParts[i].ReceiveInput(inputStates[i]);
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                //increment the current body part to get input
+                debugGetInput++;
+                debugGetInput %= (int)BodyPart.BodyPartType.MAX;
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                // decrement the current body part to get input
+                debugGetInput = ((debugGetInput - 1) + (int)BodyPart.BodyPartType.MAX) % (int)BodyPart.BodyPartType.MAX;
+                debugGetInput %= (int)BodyPart.BodyPartType.MAX;
+            }
+            bodyParts[debugGetInput].ReceiveInput(inputStates[0]);
         }
-/*
-        if (Input.GetKeyDown(KeyCode.W))
+        else
         {
-            //increment the current body part to get input
-            debugGetInput++;
-            debugGetInput %= (int)BodyPart.BodyPartType.MAX;
+            // TODO: Mess with player -> body assignments
+            for (int i = 0; i < inputStates.Length; ++i)
+            {
+                bodyParts[i].ReceiveInput(inputStates[i]);
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            // decrement the current body part to get input
-            debugGetInput--;
-            debugGetInput %= (int)BodyPart.BodyPartType.MAX;
-        }
-
-        bodyParts[debugGetInput].ReceiveInput(inputStates[0]);
-*/
     }
 
 	new void Start ()

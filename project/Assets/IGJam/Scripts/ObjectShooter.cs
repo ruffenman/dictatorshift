@@ -7,9 +7,12 @@ public class ObjectShooter : ToggleObject
 	public float delay = 3f;
 	public Vector3 spawnVelocity;
 	public GameObject spawnObject;
-	
+
+	public bool infiniteSpawn = true;
+
 	float delayLeft = 0f;
-	
+	GameObject lastCreatedObject = null;
+
 	public void SetPaused(bool pauseArg)
 	{
 		paused = pauseArg;
@@ -17,10 +20,10 @@ public class ObjectShooter : ToggleObject
 	
 	public void Shoot()
 	{
-		GameObject go = (GameObject)Instantiate (spawnObject, this.gameObject.transform.position, this.gameObject.transform.rotation);
-		if(go.GetComponent<WorldObject>())
+		lastCreatedObject = (GameObject)Instantiate (spawnObject, this.gameObject.transform.position, this.gameObject.transform.rotation);
+		if(lastCreatedObject.GetComponent<WorldObject>())
 		{
-			go.GetComponent<WorldObject>().SetVelocity (spawnVelocity);
+			lastCreatedObject.GetComponent<WorldObject>().SetVelocity(spawnVelocity);
 		}
 	}
 	
@@ -41,7 +44,10 @@ public class ObjectShooter : ToggleObject
 			delayLeft -= Time.deltaTime;
 			if(delayLeft < 0)
 			{
-				Shoot ();
+				if ((lastCreatedObject == null) || (infiniteSpawn))
+				{
+					Shoot();
+				}
 				delayLeft = delay;
 			}
 		}
