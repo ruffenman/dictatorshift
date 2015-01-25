@@ -13,9 +13,9 @@ public class DeadlyObject : WorldObject
 		WorldObject worldObject = target.GetComponent<WorldObject>();
 		if ((worldObject != null) && !defanged)
 		{
-			worldObject.TakeDamage(damage);
 			if(destroyOnCollision)
 			{
+				worldObject.TakeDamage(damage);
 				Destroy(gameObject);
 			}
 		}
