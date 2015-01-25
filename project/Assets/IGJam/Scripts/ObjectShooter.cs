@@ -22,10 +22,6 @@ public class ObjectShooter : ToggleObject
 		{
 			go.GetComponent<WorldObject>().SetVelocity (spawnVelocity);
 		}
-		else if(go.GetComponent<WorldObjectNonCharacter>())
-		{
-			go.GetComponent<WorldObjectNonCharacter>().SetVelocity (spawnVelocity);
-		}
 	}
 	
 	protected override void Activate ()
