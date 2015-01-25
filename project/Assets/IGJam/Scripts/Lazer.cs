@@ -36,6 +36,13 @@ public class Lazer : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        //update the location
+        Vector3 offset = new Vector3(0.65f, 0.3f, 0.0f);
+        CombinedPlayer player = JamGame.instance.player;
+        transform.position = player.transform.FindChild("Head").position + offset;
+
+
+        //  scale the lazer
         const float SCALE = 10.0f;
         float sizeIncrease = Time.deltaTime;
         mMiddleSection.localPosition += new Vector3(sizeIncrease * SCALE, 0.0f, 0.0f);

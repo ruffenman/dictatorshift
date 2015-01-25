@@ -7,6 +7,7 @@ public class Head : BodyPart
     private double mPowerLevelTimer = 0.0f;
     private bool mShouldFire = false;
     private Lazer.PowerLevel mCurrentPowerLevel = Lazer.PowerLevel.None;
+    private IGJInputManager.InputDirection mDirection;
 
 	public Head(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 		: base(BodyPart.BodyPartType.HEAD, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
@@ -14,8 +15,10 @@ public class Head : BodyPart
 	}
 
 	// Update is called once per frame
-	public override void Update() 
-	{
+	public override void Update()
+    {
+        mDirection = lastInputState.direction;
+
         // check to see if this frame will be firing
         UpdateFiringStatus();
 
@@ -29,7 +32,6 @@ public class Head : BodyPart
     private void UpdateFiringStatus()
     {
         if (lastInputState.actionPressed)
-        //if (Input.GetKeyDown(KeyCode.Space)) // this needs to be fixed yo
         {
             mPowerLevelTimer += Time.deltaTime;
         }
@@ -37,7 +39,6 @@ public class Head : BodyPart
         {
             mShouldFire = true;
             UpdatePowerLevel();
-            mPowerLevelTimer = 0.0f;
         }
     }
 
@@ -64,6 +65,11 @@ public class Head : BodyPart
     private void FireTheLazer()
     {
         mShouldFire = false;
-        combinedPlayer.FireTheLazer(mCurrentPowerLevel, lastInputState.direction);
+        mPowerLevelTimer = 0.0f;
+        combinedPlayer.FireTheLazer(mCurrentPowerLevel, mDirection);
+    }
+
+    protected override void OnInputReceived()
+    {
     }
 }
