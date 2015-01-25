@@ -4,12 +4,12 @@ using System.Collections;
 public class Body : BodyPart 
 {
 	//properties
-	private float thrustSpeed = 10f;
+	private float thrustSpeedVertical = 10f;
+	private float thrustSpeedHorizontal = 10f;
+	private float thrustSpeedDiagonal = 14f;
 	private float cooldownTime = 0.5f;
 	private float speedDepreciation = 0.9f;
 	private float stopSpeedSquared = 2;
-	private float horizontalModifier = 2;
-	private float verticalModifier = 1;
 
 	// utility
 	private bool canThrust;
@@ -28,7 +28,6 @@ public class Body : BodyPart
 		UpdateCooldownTimer();
 		if (bodyVelocity != Vector3.zero)
 		{
-			Debug.Log("Current velocity : " + combinedPlayer.GetVelocity());
 			combinedPlayer.AddVelocity(bodyVelocity);
 			if (bodyVelocity.sqrMagnitude > stopSpeedSquared)
 			{
@@ -77,14 +76,29 @@ public class Body : BodyPart
 			// and received button press and direction
 			if (lastInputState.actionJustPressed)
 			{
+				float speed = thrustSpeedVertical;
+				if ((lastInputState.direction == IGJInputManager.InputDirection.DownLeft) 
+					|| (lastInputState.direction == IGJInputManager.InputDirection.DownRight)
+					|| (lastInputState.direction == IGJInputManager.InputDirection.UpLeft)
+					|| (lastInputState.direction == IGJInputManager.InputDirection.UpRight))
+				{
+					speed = thrustSpeedDiagonal;
+				}
+				else if ((lastInputState.direction == IGJInputManager.InputDirection.Left) 
+				|| (lastInputState.direction == IGJInputManager.InputDirection.Right))
+				{
+					speed = thrustSpeedHorizontal;
+				}
+
 				if (lastInputState.directionVec != Vector3.zero)
 				{
-					bodyVelocity += new Vector3(lastInputState.directionVec.x * horizontalModifier, lastInputState.directionVec.y * verticalModifier, lastInputState.directionVec.z) * thrustSpeed;
+					bodyVelocity += lastInputState.directionVec * speed;
 				}
 				else
 				{
-					bodyVelocity.y += thrustSpeed;
+					bodyVelocity.y += speed;
 				}
+
 				EnterCooldown();
 			}
 		}
