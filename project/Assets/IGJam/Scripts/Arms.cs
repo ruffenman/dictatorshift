@@ -158,10 +158,17 @@ public class Arms : BodyPart
                 GameObject interactible = armsCollider.GetFirstInteractible();
                 Debug.Log("Arms.cs -- pick up object");
                 isHoldingObject = true;
-                interactible.GetComponent<WorldObject>().SetPhysicsEnabled(false);
+                WorldObject obj = interactible.GetComponent<WorldObject>();
+				obj.SetPhysicsEnabled(false);
                 heldObject = interactible;
                 heldObject.transform.parent = armsColliderObject.transform;
                 heldObject.transform.localPosition = Vector3.zero;
+
+				DeadlyObject deadlyObj = obj as DeadlyObject;
+				if (deadlyObj != null)
+				{
+					deadlyObj.Defang();
+				}
             }
             // START FLAILING
             else
@@ -186,6 +193,11 @@ public class Arms : BodyPart
                     if (obj != null)
                     {
                         obj.SetVelocity(armsVelocitiesByDir[(int)lastInputState.direction] * FLAIL_MULTIPLIER);
+						DeadlyObject deadlyObj = obj as DeadlyObject;
+						if (deadlyObj != null)
+						{
+							deadlyObj.Defang();
+						}
                     }
                     else
                     {
