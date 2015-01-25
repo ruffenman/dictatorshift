@@ -19,6 +19,15 @@ public class Lazer : WorldObject
     private IGJInputManager.InputDirection mDirection;
     private float mAngle = 0.0f;
     private Vector3 mOffset;
+    private Vector3 mOffsetRD;
+    private Vector3 mOffsetR;
+    private Vector3 mOffsetRU;
+    private Vector3 mOffsetU;
+    private Vector3 mOffsetLU;
+    private Vector3 mOffsetL;
+    private Vector3 mOffsetLD;
+    private Vector3 mOffsetD;
+
 
     private Transform mPivot = null;
     private Transform mStartSection = null;
@@ -42,8 +51,46 @@ public class Lazer : WorldObject
 
         mOffset = new Vector3(0.275f, 0.2f, 0.0f);
 
+        mOffsetR = new Vector3(0.4f, 0.15f, 0.0f);
+        mOffsetRU = new Vector3(0.5f, 0.35f, 0.0f);
+        mOffsetU = new Vector3(0.15f, 0.4f, 0.0f);
+        mOffsetLU = new Vector3(-0.3f, 0.4f, 0.0f);
+        mOffsetL = new Vector3(-0.2f, 0.15f, 0.0f);
+        mOffsetLD = new Vector3(0.05f, -0.05f, 0.0f);
+        mOffsetD = new Vector3(0.15f, 0.0f, 0.0f);
+        mOffsetRD = new Vector3(0.15f, 0.05f, 0.0f);
+
         //update the location
-        transform.position = mPlayerHead.position + mOffset;
+        switch (mDirection)
+        {
+            case IGJInputManager.InputDirection.Right:
+                transform.position = mPlayerHead.position + mOffsetR;
+                break;
+            case IGJInputManager.InputDirection.UpRight:
+                transform.position = mPlayerHead.position + mOffsetRU;
+                break;
+            case IGJInputManager.InputDirection.Up:
+                transform.position = mPlayerHead.position + mOffsetU;
+                break;
+            case IGJInputManager.InputDirection.UpLeft:
+                transform.position = mPlayerHead.position + mOffsetLU;
+                break;
+            case IGJInputManager.InputDirection.Left:
+                transform.position = mPlayerHead.position + mOffsetL;
+                break;
+            case IGJInputManager.InputDirection.DownLeft:
+                transform.position = mPlayerHead.position + mOffsetLD;
+                break;
+            case IGJInputManager.InputDirection.Down:
+                transform.position = mPlayerHead.position + mOffsetD;
+                break;
+            case IGJInputManager.InputDirection.DownRight:
+                transform.position = mPlayerHead.position + mOffsetRD;
+                break;
+            default:
+                // do nothing
+                break;
+        }
 
         objectType = ObjectType.STABLE;
 
@@ -106,7 +153,36 @@ public class Lazer : WorldObject
         mLazerCurrentTimer -= Time.deltaTime;
 
         //update the location
-        transform.position = mPlayerHead.position + mOffset;
+        switch (mDirection)
+        {
+            case IGJInputManager.InputDirection.Right:
+                transform.position = mPlayerHead.position + mOffsetR;
+                break;
+            case IGJInputManager.InputDirection.UpRight:
+                transform.position = mPlayerHead.position + mOffsetRU;
+                break;
+            case IGJInputManager.InputDirection.Up:
+                transform.position = mPlayerHead.position + mOffsetU;
+                break;
+            case IGJInputManager.InputDirection.UpLeft:
+                transform.position = mPlayerHead.position + mOffsetLU;
+                break;
+            case IGJInputManager.InputDirection.Left:
+                transform.position = mPlayerHead.position + mOffsetL;
+                break;
+            case IGJInputManager.InputDirection.DownLeft:
+                transform.position = mPlayerHead.position + mOffsetLD;
+                break;
+            case IGJInputManager.InputDirection.Down:
+                transform.position = mPlayerHead.position + mOffsetD;
+                break;
+            case IGJInputManager.InputDirection.DownRight:
+                transform.position = mPlayerHead.position + mOffsetRD;
+                break;
+            default:
+                // do nothing
+                break;
+        }
 
         //  scale the lazer
         float sizeIncrease = Time.deltaTime;
