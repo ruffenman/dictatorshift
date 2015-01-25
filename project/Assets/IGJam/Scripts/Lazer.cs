@@ -12,8 +12,7 @@ public class Lazer : WorldObject
     }
 
     public const float mLazerSpeed = 100.0f;
-    public const float mLazerLength = 100.0f;
-    public const float mLazerTimer = 1.35f;
+    public const float mLazerTimer = 0.5f;
     Vector3 mPowerSizeScale = new Vector3(0.5f, 0.0f, 0.0f);
 
     private PowerLevel mPowerLevel = PowerLevel.None;
