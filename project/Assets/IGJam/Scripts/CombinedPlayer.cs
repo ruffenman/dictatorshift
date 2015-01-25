@@ -18,6 +18,11 @@ public class CombinedPlayer : WorldObject
         return bodyParts[(int)partType];
     }
 
+	public Transform GetBodyPartTransform(BodyPart.BodyPartType partType)
+	{
+		return bodyPartTransforms[(int)partType];
+	}
+
     public void ReceiveInput(IGJInputManager.InputState[] inputStates)
     {
         // TODO: Mess with player -> body assignments
@@ -59,11 +64,11 @@ public class CombinedPlayer : WorldObject
         bodyParts[(int)BodyPart.BodyPartType.LEGS] = new Legs(3, bodyPartTransforms[(int)BodyPart.BodyPartType.LEGS], this);
 	}
 
-	public override void Update()
+	protected override void UpdateInternal()
 	{
 		if (!dead)
 		{
-			base.Update();
+			base.UpdateInternal();
 			UpdateBodyParts();
 		}
 	}

@@ -18,6 +18,7 @@ public class WorldObject : MonoBehaviour
 	public float stopVelocity = 1.0f;
 	public float groundedOffset = 0.5f;
 	public LayerMask groundedLayerMask;
+	public bool useFixedUpdate = true;
 
 	// utility
 	protected bool grounded;
@@ -32,7 +33,23 @@ public class WorldObject : MonoBehaviour
 		controller = GetComponent<CharacterController>();
 	}
 
-	public virtual void Update()
+	void Update()
+	{
+		if (!useFixedUpdate)
+		{
+			UpdateInternal();
+		}
+	}
+
+	void FixedUpdate()
+	{
+		if (useFixedUpdate)
+		{
+			UpdateInternal();
+		}
+	}
+
+	protected virtual void UpdateInternal()
 	{
 		if ((objectType == ObjectType.INTERACTIVE) && (physicsEnabled))
 		{
