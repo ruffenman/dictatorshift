@@ -5,3 +5,4 @@ project/Temp/
 project/obj/
 *.suo
 *.userprefs
+build/
