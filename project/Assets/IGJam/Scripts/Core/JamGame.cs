@@ -8,6 +8,7 @@ public class JamGame : MonoBehaviour
     // Settings
     public bool isMusicEnabled = true;
     public bool isSFXEnabled = true;
+    public bool debugBodyPartSwitching = false;
 
     public CombinedPlayer player;
 
