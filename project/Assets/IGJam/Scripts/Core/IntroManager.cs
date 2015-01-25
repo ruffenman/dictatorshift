@@ -26,7 +26,8 @@ public class IntroManager : MonoBehaviour
 	public List<GameObject> playerTeleportersWaiting;
 	public List<GameObject> playerTeleportersDone;
 	public IGJInputManager.InputState[] playerInputStates;
-
+	public GameObject backgroundMusicPrefab;
+	
 	public static IntroManager introManager;
 
 	public void ReceiveInput(IGJInputManager.InputState[] inputStates)
@@ -49,6 +50,8 @@ public class IntroManager : MonoBehaviour
 			new IGJInputManager.InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false},
 			new IGJInputManager.InputState(){directionVec = Vector3.zero, actionJustPressed = false, actionPressed = false},
 		};
+		
+		GameObject.Instantiate (backgroundMusicPrefab);
 	}
 
 	void CloseAndStartGame()

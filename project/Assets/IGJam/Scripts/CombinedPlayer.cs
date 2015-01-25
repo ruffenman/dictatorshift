@@ -134,6 +134,7 @@ public class CombinedPlayer : WorldObject
 
 	protected override void Die()
 	{
+		Debug.Log ("DIED");
 		if (deathParticles != null)
 		{
 			deathParticles.particleSystem.Play();
