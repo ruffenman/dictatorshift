@@ -112,7 +112,10 @@ public class CombinedPlayer : WorldObject
 
 	protected override void Die()
 	{
-		deathParticles.particleSystem.Play ();
+		if (deathParticles != null)
+		{
+			deathParticles.particleSystem.Play();
+		}
 		dead = true;
 		SetVisible(false);
 		StartCoroutine(Utility.Delay(respawnDelay, Respawn));
