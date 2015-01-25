@@ -10,10 +10,13 @@ public class Legs : BodyPart
 	
 	// utility
 	private Vector3 legVelocity;
+	Animator animator;
+	private bool goingLeft;
 
 	public Legs(int newPlayerIndex, Transform newSpriteTransform, CombinedPlayer newCombinedPlayer)
 		: base(BodyPart.BodyPartType.LEGS, newPlayerIndex, newSpriteTransform, newCombinedPlayer)
 	{
+		animator = newSpriteTransform.gameObject.GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -32,6 +35,20 @@ public class Legs : BodyPart
 		{
 			legVelocity = Vector3.zero;
 		}
+
+		SetAnimation();
+	}
+
+	void SetAnimation()
+	{
+		if (Mathf.Abs(legVelocity.x) > 0)
+		{
+			animator.Play("Walk");
+		}
+		else
+		{
+			animator.Play("Idle");
+		}
 	}
 
 	protected override void OnInputReceived()
@@ -39,6 +56,16 @@ public class Legs : BodyPart
 		if (lastInputState.actionJustPressed && (lastInputState.directionVec != Vector3.zero))
 		{
 			legVelocity.x += (lastInputState.directionVec.x * runSpeed);
+			if ((!goingLeft && (lastInputState.directionVec.x < 0)) || (goingLeft && (lastInputState.directionVec.x > 0)))
+			{
+				SwitchDirection();
+			}
 		}
+	}
+
+	void SwitchDirection()
+	{
+		goingLeft = !goingLeft;
+		spriteTransform.localScale = new Vector3(-spriteTransform.localScale.x, spriteTransform.localScale.y, spriteTransform.localScale.z);
 	}
 }

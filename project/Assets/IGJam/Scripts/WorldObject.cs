@@ -110,16 +110,16 @@ public class WorldObject : MonoBehaviour
 		grounded = Physics.CheckSphere(center, radius, groundedLayerMask);
 	}
 
-	void OnDrawGizmos()
-	{
-		if (objectType == ObjectType.INTERACTIVE)
-		{
-			Vector3 center = transform.position;
-			center.y -= groundedOffset;
-			float radius = transform.localScale.x / 2;
-			Gizmos.DrawSphere(center, radius);
-		}
-	}
+	//void OnDrawGizmos()
+	//{
+	//	if (objectType == ObjectType.INTERACTIVE)
+	//	{
+	//		Vector3 center = transform.position;
+	//		center.y -= groundedOffset;
+	//		float radius = transform.localScale.x / 2;
+	//		Gizmos.DrawSphere(center, radius);
+	//	}
+	//}
 
 	void Move()
 	{
