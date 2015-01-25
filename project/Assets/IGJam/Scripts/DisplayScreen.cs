@@ -5,7 +5,7 @@ public class DisplayScreen : MonoBehaviour
 {
 	public float duration = 1.0f;
 	private float timer = -1;
-
+	public bool winScreen = false;
 	private bool showing = false;
 
 	Vector3 firstPosition;
@@ -21,6 +21,10 @@ public class DisplayScreen : MonoBehaviour
 		{
 			if (showing)
 			{
+				if (winScreen)
+				{
+					Application.LoadLevel("TitleScene");
+				}
 				Destroy(gameObject);
 			}
 		}
