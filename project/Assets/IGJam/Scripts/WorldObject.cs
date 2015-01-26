@@ -60,6 +60,10 @@ public class WorldObject : MonoBehaviour
 			Move();
 			UpdateGrounded();
 		}
+		if(transform.position.y < -100)
+		{
+			Destroy (gameObject);
+		}
 	}
 
 	public void TakeDamage(float damage)
