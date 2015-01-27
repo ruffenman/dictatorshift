@@ -36,6 +36,14 @@ public class JamGame : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        if(Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+
     private IGJInputManager inputMgr;
     private SoundManager soundMgr;
 }
