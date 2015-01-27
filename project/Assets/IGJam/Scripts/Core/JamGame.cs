@@ -22,17 +22,18 @@ public class JamGame : MonoBehaviour
             instance = this;
             inputMgr = GetComponent<IGJInputManager>();
             soundMgr = GetComponent<SoundManager>();
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Debug.LogError("Tried to create multiple JamGames");
+            Debug.LogWarning("Tried to create multiple JamGames");
             Destroy(this);
         }
     }
 
     private void Start()
     {
-        //soundMgr.PlayMusic(SoundManager.MUSIC_STAGE01);
+
     }
 
     private IGJInputManager inputMgr;
