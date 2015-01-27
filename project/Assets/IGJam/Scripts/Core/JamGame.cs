@@ -27,7 +27,7 @@ public class JamGame : MonoBehaviour
         else
         {
             Debug.LogWarning("Tried to create multiple JamGames");
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 
@@ -42,6 +42,11 @@ public class JamGame : MonoBehaviour
         {
             Application.Quit();
         }
+    }
+
+    private void OnLevelWasLoaded(int sceneIndex)
+    {
+        player = GameObject.FindObjectOfType<CombinedPlayer>();
     }
 
     private IGJInputManager inputMgr;

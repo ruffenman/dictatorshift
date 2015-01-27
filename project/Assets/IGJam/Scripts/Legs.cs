@@ -61,7 +61,6 @@ public class Legs : BodyPart
 		{
 			legVelocity = Vector3.zero;
         }
-        Debug.Log("legAccel: " + legAcceleration + "deltaVel: " + deltaVel + " legVel: " + legVelocity);
 
 		SetAnimation();
 	}

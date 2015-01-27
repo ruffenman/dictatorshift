@@ -156,7 +156,7 @@ public class IGJInputManager : MonoBehaviour
 		{
 			IntroManager.introManager.ReceiveInput(inputStates);
 		}
-		else
+        else if (JamGame.instance.player)
 		{
         	CombinedPlayer player = JamGame.instance.player;
        	 player.ReceiveInput(inputStates);
