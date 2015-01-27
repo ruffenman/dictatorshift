@@ -32,35 +32,33 @@ public class CombinedPlayer : WorldObject
 
     public void ReceiveInput(IGJInputManager.InputState[] inputStates)
     {
-        /*
-        if (JamGame.instance.debugBodyPartSwitching)
-        {
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                //increment the current body part to get input
-                debugGetInput++;
-                debugGetInput %= (int)BodyPart.BodyPartType.MAX;
-            }
-            else if (Input.GetKeyDown(KeyCode.S))
-            {
-                // decrement the current body part to get input
-                debugGetInput = ((debugGetInput - 1) + (int)BodyPart.BodyPartType.MAX) % (int)BodyPart.BodyPartType.MAX;
-                debugGetInput %= (int)BodyPart.BodyPartType.MAX;
-            }
-            bodyParts[debugGetInput].ReceiveInput(inputStates[0]);
-        }
-        else
-        {
-         * */
-            if (Input.GetKeyDown(KeyCode.RightShift))
-            {
-                ShuffleInputs();
-            }
-            for (int i = 0; i < inputStates.Length; ++i)
-            {
-                bodyParts[playerToBodyMapping[i]].ReceiveInput(inputStates[i]);
-            }
-        //}
+		if (JamGame.instance.debugBodyPartSwitching)
+		{
+			if (Input.GetKeyDown(KeyCode.W))
+			{
+				//increment the current body part to get input
+				debugGetInput++;
+				debugGetInput %= (int)BodyPart.BodyPartType.MAX;
+			}
+			else if (Input.GetKeyDown(KeyCode.S))
+			{
+				// decrement the current body part to get input
+				debugGetInput = ((debugGetInput - 1) + (int)BodyPart.BodyPartType.MAX) % (int)BodyPart.BodyPartType.MAX;
+				debugGetInput %= (int)BodyPart.BodyPartType.MAX;
+			}
+			bodyParts[debugGetInput].ReceiveInput(inputStates[0]);
+		}
+		else
+		{
+			if (Input.GetKeyDown(KeyCode.RightShift))
+			{
+				ShuffleInputs();
+			}
+			for (int i = 0; i < inputStates.Length; ++i)
+			{
+				bodyParts[playerToBodyMapping[i]].ReceiveInput(inputStates[i]);
+			}
+		}
     }
 
     public void ShuffleInputs()

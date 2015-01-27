@@ -221,13 +221,19 @@ public class Sheep : DeadlyObject
 			if (destroyOnCollision)
 			{
 				SoundManager.instance.PlaySfx (SoundManager.SFX_EXPLOSION);
-				animator.Play("Explode");
-				dead = true;
-				StartCoroutine(Utility.Delay(explosionTime, CompleteDestruction));
+
+				Die();
 
                 JamGame.instance.soundManager.PlaySfx(SoundManager.SFX_EXPLOSION);
 			}
 		}
+	}
+
+	protected override void Die()
+	{
+		animator.Play("Explode");
+		dead = true;
+		StartCoroutine(Utility.Delay(explosionTime, CompleteDestruction));
 	}
 
 	private void CompleteDestruction()

@@ -23,7 +23,7 @@ public class WorldObject : MonoBehaviour
 	public GameObject deathParticles;
 
 	// utility
-	protected bool grounded;
+	public bool grounded;
 	protected float health = 100;
 	private bool physicsEnabled = true;
 
@@ -35,6 +35,12 @@ public class WorldObject : MonoBehaviour
 	public void Start()
 	{
 		controller = GetComponent<CharacterController>();
+
+		if ((GetType() == typeof(WorldObject)) && (objectType == ObjectType.STABLE))
+		{
+			controller.enabled = false;
+			Destroy(this);
+		}
 	}
 
 	void Update()
@@ -132,8 +138,8 @@ public class WorldObject : MonoBehaviour
 	void UpdateGrounded()
 	{
 		Vector3 center = transform.position;
-		center.y -= groundedOffset;
-		float radius = transform.localScale.x / 2;
+		center.y -= (groundedOffset + (transform.localScale.x / 6));
+		float radius = transform.localScale.x / 3;
 		grounded = Physics.CheckSphere(center, radius, groundedLayerMask);
 	}
 
@@ -142,8 +148,8 @@ public class WorldObject : MonoBehaviour
 		if (objectType == ObjectType.INTERACTIVE)
 		{
 			Vector3 center = transform.position;
-			center.y -= groundedOffset;
-			float radius = transform.localScale.x / 2;
+			center.y -= (groundedOffset + (transform.localScale.x/6));
+			float radius = transform.localScale.x / 3;
 			Gizmos.DrawWireSphere(center, radius);
 		}
 	}
@@ -174,7 +180,7 @@ public class WorldObject : MonoBehaviour
 				newVelocity.x = 0;
 			}
 
-			controller.Move((newVelocity + new Vector3(0.0001f, 0, 0)) * Time.deltaTime);
+			controller.Move((newVelocity + new Vector3(UnityEngine.Random.Range(-0.01f, 0.01f), 0, 0)) * Time.deltaTime);
 			SetVelocity(newVelocity);
 		}
 	}

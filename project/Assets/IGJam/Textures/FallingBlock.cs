@@ -19,5 +19,6 @@ public class FallingBlock : WorldObject
 		objectType = ObjectType.INTERACTIVE;
 		Die();
 		renderer.enabled = false;
+		collider.enabled = false;
 	}
 }
